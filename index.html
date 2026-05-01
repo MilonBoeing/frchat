@@ -13,33 +13,32 @@
 
     <!-- Paste the main Embedded Service Chat code snippet here. -->
     <script type='text/javascript'>
-    window.addEventListener("onEmbeddedMessagingReady", () => {
+	window.addEventListener("onEmbeddedMessagingReady", () => {
+		let myEmail = "milon.k.dey@boeing.com";
+		let myName = "Milon Dey";
+		let myCC = "2000010701";
         // Send data to Salesforce
-        embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({"myEmail" : "milon.k.dey@boeing.com"});
-        console.log("Received the onEmbeddedMessagingReady event…");
-        // Remove any items from the previous list that you don't want to send
-        //embeddedservice_bootstrap.prechatAPI.removeHiddenPrechatFields(["myEmail"]);
-        //console.log('Email removed');
+        embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({"Customer_Name" : myName,
+        "Customer_Email" : myEmail , "Customer_Code" : myCC}});
     });
-  	function initEmbeddedMessaging() {
-  		try {
-  			embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
-           
-  			embeddedservice_bootstrap.init(
-  				'00DWK000005KMcb',
-  				'FR_Chat_Channel',
-  				'https://boeingsupport--devpoc.sandbox.my.site.com/ESWFRChatChannel1773857684923',
-  				{
-  					scrt2URL: 'https://boeingsupport--devpoc.sandbox.my.salesforce-scrt.com'
-  				}
-  			);
-  		} catch (err) {
-  			console.error('Error loading Embedded Messaging: ', err);
-  		}
-  	};
-  </script>
-  <script type='text/javascript' src='https://boeingsupport--devpoc.sandbox.my.site.com/ESWFRChatChannel1773857684923/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
+	function initEmbeddedMessaging() {
+		try {
+			embeddedservice_bootstrap.settings.language = 'en_US'; // For example, enter 'en' or 'en-US'
 
+			embeddedservice_bootstrap.init(
+				'00DWJ000008QbfF',
+				'FR_Chat_Channel',
+				'https://boeingsupport--archsg.sandbox.my.site.com/ESWFRChatChannel1777586524547',
+				{
+					scrt2URL: 'https://boeingsupport--archsg.sandbox.my.salesforce-scrt.com'
+				}
+			);
+		} catch (err) {
+			console.error('Error loading Embedded Messaging: ', err);
+		}
+	};
+</script>
+<script type='text/javascript' src='https://boeingsupport--archsg.sandbox.my.site.com/ESWFRChatChannel1777586524547/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
   
 </body>
 </html>
