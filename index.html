@@ -18,7 +18,7 @@
 		const urlp = new URLSearchParams(qs);
 		let myEmail = urlp.get('email');
 		let myName = "Milon Dey";
-		let myCC = "2000010701";
+		let myCC = urlp.get('code');
         // Send data to Salesforce
         embeddedservice_bootstrap.prechatAPI.setHiddenPrechatFields({"Customer_Name" : myName,"Customer_Email" : myEmail , "Customer_Code" : myCC});
     });
