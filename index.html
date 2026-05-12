@@ -14,7 +14,9 @@
     <!-- Paste the main Embedded Service Chat code snippet here. -->
     <script type='text/javascript'>
 	window.addEventListener("onEmbeddedMessagingReady", () => {
-		let myEmail = "milon.k.dey@boeing.com";
+		const qs = window.location.search;
+		const urlp = new URLSearchParams(qs);
+		let myEmail = urlp.get('email');
 		let myName = "Milon Dey";
 		let myCC = "2000010701";
         // Send data to Salesforce
