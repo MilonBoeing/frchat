@@ -1,0 +1,2433 @@
+document.head.insertAdjacentHTML("beforeend", `
+    <div id="inject-deplay-styling">
+        <style>
+            body { 
+                visibility: hidden; 
+                pointer-events: none;
+                #injected_header_wrapper.injected_header_wrapper #top_hat_slot.top_hat_slot {
+                    background-color: #0a2240;
+                    min-height: 40px;
+                }
+                #injected_header_wrapper.injected_header_wrapper #header_slot.header_slot {
+                    background: #0033A0;
+                    min-height: 78px;
+                }
+            }
+        </style>
+    </div>
+`)
+
+const ICON_SPRITE = {
+    LOADING_SPINNER: `
+        <svg xmlns="http://www.w3.org/2000/svg" height="72" viewBox="0 -960 960 960" width="72" fill="#3498db">
+            <g transform="scale(-1,1) translate(-960,0)">
+                <path d="M160-160v-80h110l-16-14q-52-46-73-105t-21-119q0-111 66.5-197.5T400-790v84q-72 26-116 88.5T240-478q0 45 17 87.5t53 78.5l10 10v-98h80v240H160Zm400-10v-84q72-26 116-88.5T720-482q0-45-17-87.5T650-648l-10-10v98h-80v-240h240v80H690l16 14q49 49 71.5 106.5T800-482q0 111-66.5 197.5T560-170Z"/>
+            </g>
+        </svg>
+    `,
+    TOP_HAT_BAR: {
+        GLOBAL_NAV: {},
+        SHOPPING_AS_SECTION: {
+            RIGHT_ARROW: `
+                <svg xmlns="http://www.w3.org/2000/svg" width="9" height="12" viewBox="0 0 9 12" fill="none">
+                    <path d="M5.03636 6L0 1.4L1.53281 0L8.10198 6L1.53281 12L0 10.6L5.03636 6Z" fill="#92C0EA"/>
+                </svg>
+            `,
+            LEFT_ARROW: `
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M10.9636 12L16 16.6L14.4672 18L7.89803 12L14.4672 6L16 7.4L10.9636 12Z" fill="#92C0EA"/>
+                </svg>
+            `,
+            SWAP_ICON: `
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 20L2 15L7 10L8.4 11.425L5.825 14H13V16H5.825L8.4 18.575L7 20ZM17 14L15.6 12.575L18.175 10H11V8H18.175L15.6 5.425L17 4L22 9L17 14Z" fill="#92C0EA"/>
+                </svg>
+            `,
+        },
+    },
+    ARROW: {
+        CART_ACCORDIAN: {
+            UP: `
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16.59 15.7002L12 11.1202L7.41 15.7002L6 14.2902L12 8.2902L18 14.2902L16.59 15.7002Z" fill="#333333"></path>
+                </svg>
+            `,
+            DOWN: `
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M7.41 8.2998L12 12.8798L16.59 8.2998L18 9.7098L12 15.7098L6 9.7098L7.41 8.2998Z" fill="#333333"></path>
+                </svg>
+            `
+        },
+        GLOBAL_NAV_DROPDOWN: {
+            UP: `
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="10" viewBox="0 0 20 10" fill="none">
+                    <path d="M10 1.99999L16 7.99999L14.6 9.39999L10 4.79999L5.4 9.39999L4 7.99999L10 1.99999Z" fill="#92C0EA"/>
+                </svg>
+            `,
+            DOWN: `
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="10" viewBox="0 0 20 10" fill="none">
+                    <path d="M10 9.40003L4 3.40003L5.4 2.00003L10 6.60003L14.6 2.00003L16 3.40003L10 9.40003Z" fill="#92C0EA"/>
+                </svg>
+            `,
+        },
+        PROFILE_ACCORDION: {
+            UP: `
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16.59 15.7002L12 11.1202L7.41 15.7002L6 14.2902L12 8.2902L18 14.2902L16.59 15.7002Z" fill="#333333"></path>
+                </svg>
+            `,
+            DOWN: `
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M7.41 8.2998L12 12.8798L16.59 8.2998L18 9.7098L12 15.7098L6 9.7098L7.41 8.2998Z" fill="#333333"></path>
+                </svg>
+            `
+        },
+        FOOTER_ACCORDIAN: {
+            UP: `
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="9" viewBox="0 0 12 9" fill="none">
+                    <path d="M6 3.96364L1.4 9L-6.70011e-08 7.46719L6 0.898023L12 7.46719L10.6 9L6 3.96364Z" fill="white"/>
+                </svg>
+            `,
+            DOWN: `
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="9" viewBox="0 0 12 9" fill="none">
+                    <path d="M6 5.03636L10.6 -6.11959e-08L12 1.53281L6 8.10198L-6.70011e-08 1.53281L1.4 -4.63341e-07L6 5.03636Z" fill="white"/>
+                </svg>
+            `
+        },
+        MOBILE_NAVIGATION: {
+            RIGHT: `
+                <svg xmlns="http://www.w3.org/2000/svg" width="9" height="12" viewBox="0 0 9 12" fill="none">
+                    <path d="M5.03636 6L0 1.4L1.53281 0L8.10198 6L1.53281 12L0 10.6L5.03636 6Z" fill="#999999"/>
+                </svg>
+            `,
+            LEFT: `
+                <svg xmlns="http://www.w3.org/2000/svg" width="9" height="12" viewBox="0 0 9 12" fill="none">
+                    <path d="M3.0652 6L8.10156 10.6L6.56876 12L-0.000414419 6L6.56876 1.34002e-07L8.10156 1.4L3.0652 6Z" fill="#999999"/>
+                </svg>
+            `,
+        },
+    },
+    HOME_ICON: `
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="18" viewBox="0 0 16 18" fill="none">
+            <path d="M2 16H5V10H11V16H14V7L8 2.5L2 7V16ZM0 18V6L8 0L16 6V18H9V12H7V18H0Z" fill="#999999"/>
+        </svg>
+    `,
+    TOGGLE_MENU_ICON: `
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M21 18H3V16H21V18ZM21 13H3V11H21V13ZM21 6V8H3V6H21Z" fill="white"/>
+        </svg>
+    `,
+    SEARCH_BAR: {
+        SEARCH_ICON: `
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewBox="0 0 25 24" fill="none">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M16.269 14H15.479L15.199 13.73C16.179 12.59 16.769 11.11 16.769 9.5C16.769 5.91 13.859 3 10.269 3C6.67904 3 3.76904 5.91 3.76904 9.5C3.76904 13.09 6.67904 16 10.269 16C11.879 16 13.359 15.41 14.499 14.43L14.769 14.71V15.5L19.769 20.49L21.259 19L16.269 14ZM10.269 14C7.77904 14 5.76904 11.99 5.76904 9.5C5.76904 7.01 7.77904 5 10.269 5C12.759 5 14.769 7.01 14.769 9.5C14.769 11.99 12.759 14 10.269 14Z" fill="#333333"/>
+                <mask id="mask0_18492_31074" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="3" y="3" width="19" height="18">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16.269 14H15.479L15.199 13.73C16.179 12.59 16.769 11.11 16.769 9.5C16.769 5.91 13.859 3 10.269 3C6.67904 3 3.76904 5.91 3.76904 9.5C3.76904 13.09 6.67904 16 10.269 16C11.879 16 13.359 15.41 14.499 14.43L14.769 14.71V15.5L19.769 20.49L21.259 19L16.269 14ZM10.269 14C7.77904 14 5.76904 11.99 5.76904 9.5C5.76904 7.01 7.77904 5 10.269 5C12.759 5 14.769 7.01 14.769 9.5C14.769 11.99 12.759 14 10.269 14Z" fill="white"/>
+                </mask>
+                <g mask="url(#mask0_18492_31074)">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0.769043 0H24.769V24H0.769043V0Z" fill="white"/>
+                </g>
+            </svg>
+        `,
+        CLOSE_ICON: `
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M4.8 14.25L3.75 13.2L7.95 9L3.75 4.8L4.8 3.75L9 7.95L13.2 3.75L14.25 4.8L10.05 9L14.25 13.2L13.2 14.25L9 10.05L4.8 14.25Z" fill="#999999"/>
+            </svg>
+        `,
+        LEFT_ICON: `
+            <svg xmlns="http://www.w3.org/2000/svg" width="9" height="12" viewBox="0 0 9 12" fill="none">
+                <path d="M3.0652 6L8.10156 10.6L6.56876 12L-0.000414419 6L6.56876 1.34002e-07L8.10156 1.4L3.0652 6Z" fill="white"/>
+            </svg>
+        `,
+        RECENT_SEARCH_ICON: `
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M9 15.75C7.275 15.75 5.77188 15.1781 4.49063 14.0344C3.20937 12.8906 2.475 11.4625 2.2875 9.75H3.825C4 11.05 4.57812 12.125 5.55938 12.975C6.54063 13.825 7.6875 14.25 9 14.25C10.4625 14.25 11.7031 13.7406 12.7219 12.7219C13.7406 11.7031 14.25 10.4625 14.25 9C14.25 7.5375 13.7406 6.29688 12.7219 5.27813C11.7031 4.25938 10.4625 3.75 9 3.75C8.1375 3.75 7.33125 3.95 6.58125 4.35C5.83125 4.75 5.2 5.3 4.6875 6H6.75V7.5H2.25V3H3.75V4.7625C4.3875 3.9625 5.16563 3.34375 6.08438 2.90625C7.00313 2.46875 7.975 2.25 9 2.25C9.9375 2.25 10.8156 2.42813 11.6344 2.78438C12.4531 3.14063 13.1656 3.62188 13.7719 4.22813C14.3781 4.83438 14.8594 5.54688 15.2156 6.36563C15.5719 7.18438 15.75 8.0625 15.75 9C15.75 9.9375 15.5719 10.8156 15.2156 11.6344C14.8594 12.4531 14.3781 13.1656 13.7719 13.7719C13.1656 14.3781 12.4531 14.8594 11.6344 15.2156C10.8156 15.5719 9.9375 15.75 9 15.75ZM11.1 12.15L8.25 9.3V5.25H9.75V8.7L12.15 11.1L11.1 12.15Z" fill="#999999"/>
+            </svg>`,
+        OPEN_LINK_ICON: `
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M13.4437 13.5L5.85 5.90623V12.6H4.5V3.59998H13.5V4.94998H6.80625L14.4 12.5437L13.4437 13.5Z" fill="inherit"/>
+            </svg>
+        `,
+        SUGGESTIONS_SEARCH_ICON: `
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M14.7 15.75L9.975 11.025C9.6 11.325 9.16875 11.5625 8.68125 11.7375C8.19375 11.9125 7.675 12 7.125 12C5.7625 12 4.60938 11.5281 3.66563 10.5844C2.72188 9.64063 2.25 8.4875 2.25 7.125C2.25 5.7625 2.72188 4.60938 3.66563 3.66563C4.60938 2.72188 5.7625 2.25 7.125 2.25C8.4875 2.25 9.64063 2.72188 10.5844 3.66563C11.5281 4.60938 12 5.7625 12 7.125C12 7.675 11.9125 8.19375 11.7375 8.68125C11.5625 9.16875 11.325 9.6 11.025 9.975L15.75 14.7L14.7 15.75ZM7.125 10.5C8.0625 10.5 8.85938 10.1719 9.51563 9.51563C10.1719 8.85938 10.5 8.0625 10.5 7.125C10.5 6.1875 10.1719 5.39063 9.51563 4.73438C8.85938 4.07813 8.0625 3.75 7.125 3.75C6.1875 3.75 5.39063 4.07813 4.73438 4.73438C4.07813 5.39063 3.75 6.1875 3.75 7.125C3.75 8.0625 4.07813 8.85938 4.73438 9.51563C5.39063 10.1719 6.1875 10.5 7.125 10.5Z" fill="#999999"/>
+            </svg>
+        `,
+        RELATED_LINKS_ICON: `
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M6.08333 9.41667H11.9167V8.08333H6.08333V9.41667ZM6.08333 11.9167H11.9167V10.5833H6.08333V11.9167ZM6.08333 14.4167H9.70833V13.0833H6.08333V14.4167ZM4.49417 17C4.08139 17 3.72917 16.8531 3.4375 16.5594C3.14583 16.2656 3 15.9125 3 15.5V2.5C3 2.0875 3.14687 1.73438 3.44062 1.44063C3.73437 1.14688 4.0875 1 4.5 1H11L15 5V15.5C15 15.9125 14.8531 16.2656 14.5592 16.5594C14.2653 16.8531 13.9119 17 13.4992 17H4.49417ZM10 6V2.5H4.5V15.5H13.5V6H10Z" fill="#999999"/>
+            </svg>
+        `,
+        RELATED_LINKS_NEW_TAB_ICON: `
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3.75 15.75C3.3375 15.75 2.98438 15.6031 2.69063 15.3094C2.39688 15.0156 2.25 14.6625 2.25 14.25V6C2.25 5.5875 2.39688 5.23438 2.69063 4.94063C2.98438 4.64688 3.3375 4.5 3.75 4.5H9V6H3.75V14.25H12V9H13.5V14.25C13.5 14.6625 13.3531 15.0156 13.0594 15.3094C12.7656 15.6031 12.4125 15.75 12 15.75H3.75ZM7.275 11.775L6.225 10.725L13.2 3.75H10.5V2.25H15.75V7.5H14.25V4.8L7.275 11.775Z" fill="#999999"/>
+            </svg>
+        `,
+    },
+    CLOSE_ICON: `
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M1.4 14L0 12.6L5.6 7L0 1.4L1.4 0L7 5.6L12.6 0L14 1.4L8.4 7L14 12.6L12.6 14L7 8.4L1.4 14Z" fill="#999999"/>
+        </svg>
+    `,
+    NEW_TAB_ICON: `
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M2 18C1.45 18 0.979167 17.8042 0.5875 17.4125C0.195833 17.0208 0 16.55 0 16V5C0 4.45 0.195833 3.97917 0.5875 3.5875C0.979167 3.19583 1.45 3 2 3H9V5H2V16H13V9H15V16C15 16.55 14.8042 17.0208 14.4125 17.4125C14.0208 17.8042 13.55 18 13 18H2ZM6.7 12.7L5.3 11.3L14.6 2H11V0H18V7H16V3.4L6.7 12.7Z" fill="#999999"/>
+        </svg>
+    `,
+    NOTIFICATION_ICON: `
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+            <path d="M12 2.75171C6.48 2.75171 2 7.23171 2 12.7517C2 18.2717 6.48 22.7517 12 22.7517C17.52 22.7517 22 18.2717 22 12.7517C22 7.23171 17.52 2.75171 12 2.75171ZM13 17.7517H11V15.7517H13V17.7517ZM13 13.7517H11V7.75171H13V13.7517Z" fill="#0033A1"/>
+        </svg>
+    `,
+    LOGOUT_ICON: `
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M2 18C1.45 18 0.979167 17.8042 0.5875 17.4125C0.195833 17.0208 0 16.55 0 16V2C0 1.45 0.195833 0.979167 0.5875 0.5875C0.979167 0.195833 1.45 0 2 0H9V2H2V16H9V18H2ZM13 14L11.625 12.55L14.175 10H6V8H14.175L11.625 5.45L13 4L18 9L13 14Z" fill="#999999"/>
+        </svg>
+    `,
+    ACCOUNT_SELECTOR: {
+        ARROW_DOWN: `
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="9" viewBox="0 0 12 9" fill="none">
+                <path d="M6 5.03636L10.6 1.66948e-08L12 1.53281L6 8.10198L1.82785e-08 1.53281L1.4 1.26404e-07L6 5.03636Z" fill="#999999"/>
+            </svg>
+        `,
+        ARROW_UP: `
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="9" viewBox="0 0 12 9" fill="none">
+                <path d="M6 3.06569L1.4 8.10205L-6.70011e-08 6.56924L6 7.41243e-05L12 6.56924L10.6 8.10205L6 3.06569Z" fill="#333333"/>
+            </svg>
+        `,
+        ACCOUNT_MODIFIED: `
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M9 19.9C7.73333 19.7667 6.55417 19.4208 5.4625 18.8625C4.37083 18.3042 3.42083 17.5792 2.6125 16.6875C1.80417 15.7958 1.16667 14.775 0.7 13.625C0.233333 12.475 0 11.25 0 9.95C0 8.43333 0.304167 7.03333 0.9125 5.75C1.52083 4.46667 2.35 3.36667 3.4 2.45H1V0.45H7V6.45H5V3.725C4.08333 4.45833 3.35417 5.3625 2.8125 6.4375C2.27083 7.5125 2 8.68333 2 9.95C2 12 2.67083 13.7708 4.0125 15.2625C5.35417 16.7542 7.01667 17.625 9 17.875V19.9ZM8.575 14.55L4.35 10.3L5.75 8.9L8.575 11.725L14.25 6.05L15.65 7.475L8.575 14.55ZM13 19.45V13.45H15V16.175C15.9167 15.425 16.6458 14.5167 17.1875 13.45C17.7292 12.3833 18 11.2167 18 9.95C18 7.9 17.3292 6.12917 15.9875 4.6375C14.6458 3.14583 12.9833 2.275 11 2.025V0C13.5333 0.25 15.6667 1.31667 17.4 3.2C19.1333 5.08333 20 7.33333 20 9.95C20 11.4667 19.6958 12.8667 19.0875 14.15C18.4792 15.4333 17.65 16.5333 16.6 17.45H19V19.45H13Z" fill="#333333"/>
+            </svg>
+        `,
+        ACCOUNT_UNCHECK: `
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="9" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        `,
+        ACCOUNT_CHECK: `
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="9" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="12" cy="12" r="6" fill="#000000"/>
+            </svg>
+        `,
+        CREDIT_HOLD_WARNING_ICON: `
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="19" viewBox="0 0 22 19" fill="none">
+                <path d="M0 19L11 0L22 19H0ZM3.45 17H18.55L11 4L3.45 17ZM11.7125 15.7125C11.9042 15.5208 12 15.2833 12 15C12 14.7167 11.9042 14.4792 11.7125 14.2875C11.5208 14.0958 11.2833 14 11 14C10.7167 14 10.4792 14.0958 10.2875 14.2875C10.0958 14.4792 10 14.7167 10 15C10 15.2833 10.0958 15.5208 10.2875 15.7125C10.4792 15.9042 10.7167 16 11 16C11.2833 16 11.5208 15.9042 11.7125 15.7125ZM10 13H12V8H10V13Z" fill="#EA002A"/>
+            </svg>
+        `
+    },
+    OPEN_IN_NEW_TAB_ICON: `
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M5 21C4.45 21 3.97917 20.8042 3.5875 20.4125C3.19583 20.0208 3 19.55 3 19V8C3 7.45 3.19583 6.97917 3.5875 6.5875C3.97917 6.19583 4.45 6 5 6H12V8H5V19H16V12H18V19C18 19.55 17.8042 20.0208 17.4125 20.4125C17.0208 20.8042 16.55 21 16 21H5ZM9.7 15.7L8.3 14.3L17.6 5H14V3H21V10H19V6.4L9.7 15.7Z" fill="#999999"/>
+        </svg>
+    `,
+    FACEBOOK: ` 
+                <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-labelledby="fbTitle" role="img">
+                   <title id="fbTitle">Facebook</title>
+                   <path d="m29.76 50.32h6.75v-16.32h4.49l.59-5.63h-5.08v-2.81c0-1.47.14-2.25 2.24-2.25h2.81v-5.63h-4.5c-5.4 0-7.31 2.73-7.31 7.32v3.37h-3.35v5.63h3.36zm4.24 13.68a30 30 0 1 1 30-30 30 30 0 0 1 -30 30z" fill="#fff" fill-rule="evenodd" transform="translate(-4 -4)"></path>
+                </svg>
+             `,
+    TWITTER: `
+                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 60 60" style="enable-background:new 0 0 60 60;" xml:space="preserve">
+                   <style type="text/css"> .st0{fill-rule:evenodd;clip-rule:evenodd;fill:#FFFFFF;} </style>
+                   <g>
+                       <polygon class="st0" points="30.8,27.7 23.7,17.6 19.9,17.6 28.7,30.2 29.8,31.7 29.8,31.7 37.3,42.5 41.1,42.5 31.9,29.3 	"/>
+                       <path class="st0" d="M30,0C13.4,0,0,13.4,0,30s13.4,30,30,30s30-13.4,30-30S46.6,0,30,0z M36.2,44.3l-7.6-11.1L19,44.3h-2.5 l10.9-12.7L16.6,15.7h8.3l7.2,10.5l9-10.5h2.5L33.2,27.8h0l11.3,16.4H36.2z"/>
+                   </g>
+                </svg>
+             `,
+    YOUTUBE: ` 
+                <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-labelledby="ytTitle" role="img">
+                   <title id="ytTitle">YouTube</title>
+                   <path d="m43.53 41.34a.7.7 0 0 0 -.6.24 1.37 1.37 0 0 0 -.18.8v.9h1.54v-.9a1.29 1.29 0 0 0 -.19-.8.65.65 0 0 0 -.57-.24zm-6 0a.64.64 0 0 1 .54.23 1 1 0 0 1 .19.68v4.55a1 1 0 0 1 -.16.62.56.56 0 0 1 -.47.18 1.06 1.06 0 0 1 -.42-.09 1.52 1.52 0 0 1 -.41-.31v-5.54a1.41 1.41 0 0 1 .36-.27.8.8 0 0 1 .35-.08zm5.24 3.35v1.67a2 2 0 0 0 .17 1 .63.63 0 0 0 .59.27.71.71 0 0 0 .61-.23 1.94 1.94 0 0 0 .17-1v-.4h1.8v.45a2.88 2.88 0 0 1 -.66 2.06 2.58 2.58 0 0 1 -2 .69 2.39 2.39 0 0 1 -1.85-.73 2.91 2.91 0 0 1 -.67-2v-4a2.52 2.52 0 0 1 .74-1.88 2.59 2.59 0 0 1 1.91-.73 2.42 2.42 0 0 1 1.84.67 2.71 2.71 0 0 1 .65 1.94v2.26zm-3.13 3.83a1.43 1.43 0 0 1 -1.18.51 2.08 2.08 0 0 1 -.92-.2 2.25 2.25 0 0 1 -.74-.6v.68h-1.8v-12h1.77v3.88a2.66 2.66 0 0 1 .75-.62 1.68 1.68 0 0 1 .8-.21 1.52 1.52 0 0 1 1.27.56 2.71 2.71 0 0 1 .41 1.6v4.93a2.17 2.17 0 0 1 -.38 1.44zm-7.64.36v-1a3.92 3.92 0 0 1 -1 .82 2.12 2.12 0 0 1 -1 .28 1.1 1.1 0 0 1 -.91-.39 2 2 0 0 1 -.3-1.19v-7.4h1.74v6.81a.78.78 0 0 0 .11.46.4.4 0 0 0 .36.14.93.93 0 0 0 .48-.19 2.41 2.41 0 0 0 .55-.47v-6.75h1.67v8.88zm-6-10.28v10.28h-2v-10.28h-2v-1.75h6v1.75zm8-5.6s12.08 0 13.52 1.45 1.48 8.49 1.48 8.55 0 7.12-1.45 8.56-13.55 1.44-13.55 1.44-12.08 0-13.51-1.46-1.49-8.54-1.49-8.54 0-7.12 1.44-8.55 13.56-1.45 13.56-1.45zm9.53-3.73h-2v-1.1a3.78 3.78 0 0 1 -1.13.91 2.41 2.41 0 0 1 -1.14.32 1.23 1.23 0 0 1 -1-.44 2.09 2.09 0 0 1 -.35-1.31v-8.17h2v7.52a.81.81 0 0 0 .13.5.47.47 0 0 0 .4.16 1.12 1.12 0 0 0 .55-.21 2.44 2.44 0 0 0 .6-.52v-7.45h2v9.77zm-10.68-1.68a.82.82 0 0 0 .6.22.89.89 0 0 0 .63-.23.79.79 0 0 0 .24-.61v-5.33a.61.61 0 0 0 -.25-.52 1 1 0 0 0 -.62-.2.88.88 0 0 0 -.59.2.66.66 0 0 0 -.22.52v5.36a.88.88 0 0 0 .21.59zm-1.44-7.69a3.18 3.18 0 0 1 2.13-.67 2.88 2.88 0 0 1 2 .71 2.35 2.35 0 0 1 .78 1.83v5.05a2.6 2.6 0 0 1 -.76 2 3 3 0 0 1 -2.11.71 2.85 2.85 0 0 1 -2.06-.73 2.63 2.63 0 0 1 -.78-2v-5.09a2.25 2.25 0 0 1 .8-1.81zm-6.15-3.9h-2.26l2.64 8v5.26h2.21v-5.5l2.6-7.76h-2.25l-1.36 5.3h-.14zm8.74 48a30 30 0 1 1 30-30 30 30 0 0 1 -30 30z" fill="#fff" fill-rule="evenodd" transform="translate(-4 -4)"></path>
+                </svg>
+             `,
+    LINKEDIN: ` 
+                <svg id="Layer_1" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 60 60" style="enable-background:new 0 0 60 60;" xml:space="preserve">
+                   <style type="text/css">.st0{fill:#FFFFFF;}</style>
+                   <title id="linkedinTitle">LinkedIn</title>
+                   <path class="st0" d="M30,0C13.4,0,0,13.4,0,30s13.4,30,30,30c16.6,0,30-13.4,30-30S46.6,0,30,0z M22.1,44.8h-7.2V23.2h7.2V44.8z  M18.5,20.3L18.5,20.3c-2.5,0-4-1.7-4-3.7c0-2.1,1.6-3.7,4.1-3.7c2.5,0,4,1.6,4,3.7C22.5,18.6,21,20.3,18.5,20.3z M47.9,44.8h-7.2  V33.2c0-2.9-1-4.9-3.6-4.9c-2,0-3.2,1.3-3.7,2.6c-0.2,0.5-0.2,1.1-0.2,1.7v12H26c0,0,0.1-19.5,0-21.6h7.2v3.1c1-1.5,2.7-3.6,6.5-3.6  c4.7,0,8.3,3.1,8.3,9.7V44.8z"></path>
+                </svg>
+             `,
+    BOEING_LOGO: `
+            <svg xmlns="http://www.w3.org/2000/svg" width="171" height="48" viewBox="0 0 171 48" fill="none">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M27.15 26.85C27.15 28.8 26.7 30.75 25.95 32.55C31.7715 34.824 38.3652 35.4433 42.6538 35.846C45.4375 36.1075 47.25 36.2777 47.25 36.75C47.25 36.75 29.55 37.2 23.7 37.65L23.25 36.75C20.7 39.15 17.4 40.65 13.65 40.65C10.5 40.65 7.8 39.6 5.55 37.95C4.2 41.7 4.2 44.25 5.85 44.85C8.55 45.9 13.5 41.4 13.5 41.4C10.35 46.2 4.95 49.2 2.55 47.55C0.3 46.05 0.75 41.4 3.3 35.85C1.2 33.45 0 30.45 0 27C0 19.5 6.15 13.35 13.65 13.35C15.9 13.35 18 13.8 19.95 14.85C22.5 12.75 25.2 10.8 28.2 9C25.65 11.1 23.4 13.35 21.15 15.6L21.15 15.6C24.75 18 27.15 22.2 27.15 26.85ZM13.8 14.85C7.2 14.85 1.8 20.25 1.8 26.85C1.8 29.55 2.7 32.1 4.35 34.05C7.2 28.2 12.3 21.6 18.75 15.9C17.25 15.3 15.6 14.85 13.8 14.85ZM13.65 38.7C10.8 38.7 8.25 37.8 6.3 36.15C8.7 30.75 13.5 23.7 20.1 16.65C23.4 18.75 25.65 22.5 25.65 26.7C25.65 28.5 25.2 30.3 24.45 31.8C22.35 30.9 20.4 29.7 18.75 28.05L22.35 34.8C20.25 37.35 17.1 38.7 13.65 38.7ZM62.7 24.45C64.2 24.15 65.55 23.25 66.45 22.05L67.95 20.1C68.25 19.8 68.4 19.35 68.4 18.9C68.4 17.85 67.5 16.95 66.45 16.95H58.5H50.85L40.2 31.05H47.7H56.25C58.35 31.05 60.3 30 61.35 28.5L62.85 26.55C63 26.25 63.15 25.95 63.15 25.65C63.3 25.2 63 24.75 62.7 24.45ZM55.575 26.175C55.5375 26.25 55.5 26.325 55.5 26.4L54.6 27.6C54.3 28.05 53.85 28.2 53.25 28.2H50.1L52.2 25.5H55.2C55.5 25.5 55.65 25.65 55.65 25.95C55.65 26.025 55.6125 26.1 55.575 26.175ZM58.8 21.9L59.55 20.85C59.7 20.85 59.7 20.7 59.7 20.4C59.7 20.1 59.55 19.95 59.25 19.95H56.25L54.3 22.5H57.45C58.05 22.5 58.5 22.35 58.8 21.9ZM91.65 19.05C91.65 18 90.75 17.1 89.7 17.1H77.4C75.3 17.1 73.35 18.15 72.3 19.65L66 28.05C65.7 28.35 65.55 28.8 65.55 29.25C65.55 30.3 66.45 31.2 67.5 31.2H79.8C81.9 31.2 83.85 30.15 84.9 28.65L91.2 20.25C91.5 19.8 91.65 19.5 91.65 19.05ZM83.1 20.85L78 27.6C77.7 28.05 77.25 28.2 76.65 28.2H74.4C74.1 28.2 73.95 28.05 73.95 27.75C73.95 27.6863 73.95 27.6496 73.9615 27.617C73.9771 27.5729 74.0137 27.5363 74.1 27.45L74.1 27.45L79.2 20.7C79.5 20.25 79.95 20.1 80.55 20.1H82.8C83.1 20.1 83.25 20.25 83.25 20.55C83.1 20.7 83.1 20.85 83.1 20.85ZM106.95 25.5L109.2 22.65H101.55L103.35 20.1H111.15L113.25 17.1H97.95L87.3 31.2H102.75L105 28.2H97.2L99.3 25.5H106.95ZM117.75 17.1L107.1 31.2H114.75L125.4 17.1H117.75ZM130.2 17.1H136.2L137.85 24.3L143.25 17.1H148.35L137.7 31.2H131.7L130.05 24.15L124.8 31.2H119.7L130.2 17.1ZM168.3 17.1H156C153.9 17.1 151.95 18.15 150.9 19.65L144.6 28.05C144.3 28.35 144.3 28.8 144.3 29.25C144.3 30.3 145.2 31.2 146.1 31.2H158.4C160.5 31.2 162.45 30.15 163.5 28.65L165 26.55H166.8L169.05 23.55H159.6L156.6 27.45C156.3 27.9 155.85 28.05 155.25 28.05H153.15C152.85 28.05 152.7 27.9 152.7 27.6C152.7 27.5363 152.7 27.4996 152.712 27.467C152.727 27.4229 152.764 27.3863 152.85 27.3001L152.85 27.3L157.95 20.55C158.25 20.1 158.7 19.95 159.3 19.95H161.55C161.85 19.95 162 20.1 162 20.4C162 20.4637 162 20.5004 161.988 20.533C161.973 20.5771 161.936 20.6137 161.85 20.6999L161.85 20.7L160.95 21.75H168.6L169.95 19.95C170.25 19.65 170.4 19.2 170.4 18.75C170.25 18 169.35 17.1 168.3 17.1Z" fill="white"/>
+                <mask id="mask0_18041_44728" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="9" width="171" height="40">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M27.15 26.85C27.15 28.8 26.7 30.75 25.95 32.55C31.7715 34.824 38.3652 35.4433 42.6538 35.846C45.4375 36.1075 47.25 36.2777 47.25 36.75C47.25 36.75 29.55 37.2 23.7 37.65L23.25 36.75C20.7 39.15 17.4 40.65 13.65 40.65C10.5 40.65 7.8 39.6 5.55 37.95C4.2 41.7 4.2 44.25 5.85 44.85C8.55 45.9 13.5 41.4 13.5 41.4C10.35 46.2 4.95 49.2 2.55 47.55C0.3 46.05 0.75 41.4 3.3 35.85C1.2 33.45 0 30.45 0 27C0 19.5 6.15 13.35 13.65 13.35C15.9 13.35 18 13.8 19.95 14.85C22.5 12.75 25.2 10.8 28.2 9C25.65 11.1 23.4 13.35 21.15 15.6L21.15 15.6C24.75 18 27.15 22.2 27.15 26.85ZM13.8 14.85C7.2 14.85 1.8 20.25 1.8 26.85C1.8 29.55 2.7 32.1 4.35 34.05C7.2 28.2 12.3 21.6 18.75 15.9C17.25 15.3 15.6 14.85 13.8 14.85ZM13.65 38.7C10.8 38.7 8.25 37.8 6.3 36.15C8.7 30.75 13.5 23.7 20.1 16.65C23.4 18.75 25.65 22.5 25.65 26.7C25.65 28.5 25.2 30.3 24.45 31.8C22.35 30.9 20.4 29.7 18.75 28.05L22.35 34.8C20.25 37.35 17.1 38.7 13.65 38.7ZM62.7 24.45C64.2 24.15 65.55 23.25 66.45 22.05L67.95 20.1C68.25 19.8 68.4 19.35 68.4 18.9C68.4 17.85 67.5 16.95 66.45 16.95H58.5H50.85L40.2 31.05H47.7H56.25C58.35 31.05 60.3 30 61.35 28.5L62.85 26.55C63 26.25 63.15 25.95 63.15 25.65C63.3 25.2 63 24.75 62.7 24.45ZM55.575 26.175C55.5375 26.25 55.5 26.325 55.5 26.4L54.6 27.6C54.3 28.05 53.85 28.2 53.25 28.2H50.1L52.2 25.5H55.2C55.5 25.5 55.65 25.65 55.65 25.95C55.65 26.025 55.6125 26.1 55.575 26.175ZM58.8 21.9L59.55 20.85C59.7 20.85 59.7 20.7 59.7 20.4C59.7 20.1 59.55 19.95 59.25 19.95H56.25L54.3 22.5H57.45C58.05 22.5 58.5 22.35 58.8 21.9ZM91.65 19.05C91.65 18 90.75 17.1 89.7 17.1H77.4C75.3 17.1 73.35 18.15 72.3 19.65L66 28.05C65.7 28.35 65.55 28.8 65.55 29.25C65.55 30.3 66.45 31.2 67.5 31.2H79.8C81.9 31.2 83.85 30.15 84.9 28.65L91.2 20.25C91.5 19.8 91.65 19.5 91.65 19.05ZM83.1 20.85L78 27.6C77.7 28.05 77.25 28.2 76.65 28.2H74.4C74.1 28.2 73.95 28.05 73.95 27.75C73.95 27.6863 73.95 27.6496 73.9615 27.617C73.9771 27.5729 74.0137 27.5363 74.1 27.45L74.1 27.45L79.2 20.7C79.5 20.25 79.95 20.1 80.55 20.1H82.8C83.1 20.1 83.25 20.25 83.25 20.55C83.1 20.7 83.1 20.85 83.1 20.85ZM106.95 25.5L109.2 22.65H101.55L103.35 20.1H111.15L113.25 17.1H97.95L87.3 31.2H102.75L105 28.2H97.2L99.3 25.5H106.95ZM117.75 17.1L107.1 31.2H114.75L125.4 17.1H117.75ZM130.2 17.1H136.2L137.85 24.3L143.25 17.1H148.35L137.7 31.2H131.7L130.05 24.15L124.8 31.2H119.7L130.2 17.1ZM168.3 17.1H156C153.9 17.1 151.95 18.15 150.9 19.65L144.6 28.05C144.3 28.35 144.3 28.8 144.3 29.25C144.3 30.3 145.2 31.2 146.1 31.2H158.4C160.5 31.2 162.45 30.15 163.5 28.65L165 26.55H166.8L169.05 23.55H159.6L156.6 27.45C156.3 27.9 155.85 28.05 155.25 28.05H153.15C152.85 28.05 152.7 27.9 152.7 27.6C152.7 27.5363 152.7 27.4996 152.712 27.467C152.727 27.4229 152.764 27.3863 152.85 27.3001L152.85 27.3L157.95 20.55C158.25 20.1 158.7 19.95 159.3 19.95H161.55C161.85 19.95 162 20.1 162 20.4C162 20.4637 162 20.5004 161.988 20.533C161.973 20.5771 161.936 20.6137 161.85 20.6999L161.85 20.7L160.95 21.75H168.6L169.95 19.95C170.25 19.65 170.4 19.2 170.4 18.75C170.25 18 169.35 17.1 168.3 17.1Z" fill="white"/>
+                </mask>
+                <g mask="url(#mask0_18041_44728)">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0H171V48H0V0Z" fill="white"/>
+                </g>
+            </svg>
+    `,
+    CART: {
+        CART_ICON: `
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22" fill="none">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M15.166 11.9166C15.8533 11.9166 16.4581 11.5408 16.7696 10.9724L20.0501 5.02325C20.3891 4.41825 19.9493 3.66659 19.2529 3.66659H5.69123L4.82988 1.83325H1.8335V3.66659H3.66615L6.96492 10.6241L5.72788 12.8608C5.05896 14.0891 5.93864 15.5833 7.33145 15.5833H18.3274V13.7499H7.33145L8.33941 11.9166H15.166ZM6.56174 5.49992H17.6951L15.166 10.0833H8.73343L6.56174 5.49992ZM7.33145 16.4999C6.32349 16.4999 5.50796 17.3249 5.50796 18.3333C5.50796 19.3416 6.32349 20.1666 7.33145 20.1666C8.33941 20.1666 9.16411 19.3416 9.16411 18.3333C9.16411 17.3249 8.33941 16.4999 7.33145 16.4999ZM16.4947 16.4999C15.4868 16.4999 14.6712 17.3249 14.6712 18.3333C14.6712 19.3416 15.4868 20.1666 16.4947 20.1666C17.5027 20.1666 18.3274 19.3416 18.3274 18.3333C18.3274 17.3249 17.5027 16.4999 16.4947 16.4999Z" fill="white"/>
+                <mask id="mask0_8322_33585" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="1" y="1" width="20" height="20">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M15.166 11.9166C15.8533 11.9166 16.4581 11.5408 16.7696 10.9724L20.0501 5.02325C20.3891 4.41825 19.9493 3.66659 19.2529 3.66659H5.69123L4.82988 1.83325H1.8335V3.66659H3.66615L6.96492 10.6241L5.72788 12.8608C5.05896 14.0891 5.93864 15.5833 7.33145 15.5833H18.3274V13.7499H7.33145L8.33941 11.9166H15.166ZM6.56174 5.49992H17.6951L15.166 10.0833H8.73343L6.56174 5.49992ZM7.33145 16.4999C6.32349 16.4999 5.50796 17.3249 5.50796 18.3333C5.50796 19.3416 6.32349 20.1666 7.33145 20.1666C8.33941 20.1666 9.16411 19.3416 9.16411 18.3333C9.16411 17.3249 8.33941 16.4999 7.33145 16.4999ZM16.4947 16.4999C15.4868 16.4999 14.6712 17.3249 14.6712 18.3333C14.6712 19.3416 15.4868 20.1666 16.4947 20.1666C17.5027 20.1666 18.3274 19.3416 18.3274 18.3333C18.3274 17.3249 17.5027 16.4999 16.4947 16.4999Z" fill="white"/>
+                </mask>
+                <g mask="url(#mask0_8322_33585)">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0H22V22H0V0Z" fill="white"/>
+                </g>
+            </svg>
+        `,
+        POPUP_NOTIFY: `
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM11 15H9V13H11V15ZM11 11H9V5H11V11Z" fill="#0033A1"/>
+            </svg>
+        `,
+        GREEN_CHECK: `
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="8" fill="#699900"/>
+                <path d="M10.4667 13.8572L7.86667 11.2572L7 12.1239L10.4667 15.5905L17.1904 8.8667L16.3237 8.00003L10.4667 13.8572Z" fill="white"/>
+            </svg>
+        `,
+        DELETE_BIN_ICON: `
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M14.12 10.47L12 12.59L9.87 10.47L8.46 11.88L10.59 14L8.47 16.12L9.88 17.53L12 15.41L14.12 17.53L15.53 16.12L13.41 14L15.53 11.88L14.12 10.47ZM15.5 4L14.5 3H9.5L8.5 4H5V6H19V4H15.5ZM6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19V7H6V19ZM8 9H16V19H8V9Z" fill="#4780BC"/>
+            </svg>
+        `,
+        WARNING_BANNER_ICON: `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M0 16H16L8 0L0 16ZM8.72727 13.4737H7.27273V11.7895H8.72727V13.4737ZM8.72727 10.1053H7.27273V6.73684H8.72727V10.1053Z" fill="#C77E00"/>
+            </svg>
+        `,
+        BLUE_BANNER_INFO_ICON: `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M8 16C12.416 16 16 12.416 16 8C16 3.584 12.416 0 8 0C3.584 0 0 3.584 0 8C0 12.416 3.584 16 8 16ZM7.2 4L8.8 4L8.8 5.6L7.2 5.6V4ZM7.2 7.2L8.8 7.2V12H7.2L7.2 7.2Z" fill="#0033A1"/>
+            </svg>
+        `
+    },
+    BENTO_ICON: `
+                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path fill-rule="evenodd" clip-rule="evenodd" d="M4 8H8V4H4V8ZM10 20H14V16H10V20ZM4 20H8V16H4V20ZM4 14H8V10H4V14ZM10 14H14V10H10V14ZM16 4V8H20V4H16ZM10 8H14V4H10V8ZM16 14H20V10H16V14ZM16 20H20V16H16V20Z" fill="white"/>
+                      <mask id="mask0_11683_27257" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="4" y="4" width="16" height="16">
+                         <path fill-rule="evenodd" clip-rule="evenodd" d="M4 8H8V4H4V8ZM10 20H14V16H10V20ZM4 20H8V16H4V20ZM4 14H8V10H4V14ZM10 14H14V10H10V14ZM16 4V8H20V4H16ZM10 8H14V4H10V8ZM16 14H20V10H16V14ZM16 20H20V16H16V20Z" fill="white"/>
+                      </mask>
+                      <g mask="url(#mask0_11683_27257)">
+                         <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0H24V24H0V0Z" fill="white"/>
+                      </g>
+                   </svg>
+                `,
+    HELP_ICON: `
+             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#FFFFFF"><path d="M478-240q21 0 35.5-14.5T528-290q0-21-14.5-35.5T478-340q-21 0-35.5 14.5T428-290q0 21 14.5 35.5T478-240Zm-36-154h74q0-33 7.5-52t42.5-52q26-26 41-49.5t15-56.5q0-56-41-86t-97-30q-57 0-92.5 30T342-618l66 26q5-18 22.5-39t53.5-21q32 0 48 17.5t16 38.5q0 20-12 37.5T506-526q-44 39-54 59t-10 73Zm38 314q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z"/></svg>
+             `,
+    PROFILE_ICON: `
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 5C13.66 5 15 6.34 15 8C15 9.66 13.66 11 12 11C10.34 11 9 9.66 9 8C9 6.34 10.34 5 12 5ZM6 15.98C7.29 17.92 9.5 19.2 12 19.2C14.5 19.2 16.71 17.92 18 15.98C17.97 13.99 13.99 12.9 12 12.9C10 12.9 6.03 13.99 6 15.98Z" fill="white"/>
+            <mask id="mask0_11683_27269" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="2" y="2" width="20" height="20">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 5C13.66 5 15 6.34 15 8C15 9.66 13.66 11 12 11C10.34 11 9 9.66 9 8C9 6.34 10.34 5 12 5ZM6 15.98C7.29 17.92 9.5 19.2 12 19.2C14.5 19.2 16.71 17.92 18 15.98C17.97 13.99 13.99 12.9 12 12.9C10 12.9 6.03 13.99 6 15.98Z" fill="white"/>
+            </mask>
+            <g mask="url(#mask0_11683_27269)">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M0 0H24V24H0V0Z" fill="white"/>
+            </g>
+        </svg>
+    `
+}
+
+function ShowSeamlessLoading(shouldShow) {
+    const loadingElement = document.querySelector("body .seamless_loading")
+    const loadingParentElement = document.querySelector('body');
+    if (shouldShow) {
+        if (!loadingElement) {
+            const loading_element = document.createElement('div')
+            loading_element.className = 'seamless_loading'
+            loading_element.innerHTML = `
+                <style>
+                    .spinner_div{
+                        position: fixed;
+                        inset: 0;
+                        display: grid;
+                        place-items: center;
+                        z-index: 999999;
+                        background-color: rgba(255, 255, 255);
+                    }
+                    
+                    .spinner_container {
+                        width: 72px;
+                        height: 72px;
+                        animation: spin 2s linear infinite;
+                    }
+  
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                </style>
+                
+            <div class="spinner_div"><div class="spinner_container">${ICON_SPRITE.LOADING_SPINNER}</div></div>`
+            if (loadingParentElement) {
+                loadingParentElement?.prepend(loading_element)
+                const injecteddeplayStyling = document.querySelector("#inject-deplay-styling")
+                if (injecteddeplayStyling) {
+                    injecteddeplayStyling.innerHTML = ""
+                }
+            }
+        }
+    } else {
+        if (loadingElement) {
+            loadingParentElement?.removeChild(loadingElement);
+        }
+    }
+}
+ShowSeamlessLoading(true)
+
+
+const HEADER_WRAPPER_COMPONENT_WRAPPER_SLOTS = {
+    attributes: { id: "injected_header_wrapper", class: "injected_header_wrapper" },
+    children: [
+        { attributes: { id: "notification_slot", class: "notification_slot" } },
+        { attributes: { id: "run_as_slot", class: "run_as_slot" } },
+        { attributes: { id: "top_hat_slot", class: "top_hat_slot" } },
+        { attributes: { id: "header_slot", class: "header_slot" } },
+        { attributes: { id: "navigation_slot", class: "navigation_slot" } },
+        { attributes: { id: "banner_slot", class: "banner_slot" } },
+    ]
+}
+
+const HEADER_SLOTS = {
+    "notification": 0,
+    "runas": 1,
+    "tophat": 2,
+    "header": 3,
+    "navigation": 4,
+    "banner": 5,
+    getSlot: function (slot_name) {
+        const id = HEADER_WRAPPER_COMPONENT_WRAPPER_SLOTS.children[this[slot_name]].attributes.id
+        const className = HEADER_WRAPPER_COMPONENT_WRAPPER_SLOTS.children[this[slot_name]].attributes.class
+        return { id, className }
+    }
+}
+
+
+const footerWrapperDIV = {
+    id: "injected_footer_wrapper",
+    class: "injected_footer_wrapper",
+}
+
+let mainIconsAvailability = [
+    { slot: "home_icon_slot", key: "nav", class: "nav_icon_list", available: false },
+    { slot: "help_icon_slot", key: "help", class: "help_icon_list", available: false },
+    { slot: "bento_icon_slot", key: "bento", class: "bento_icon_list", available: false },
+    { slot: "profile_icon_slot", key: "profile", class: "profile_icon_list", available: false },
+];
+
+
+/*********** dom Util Functions ***********/
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
+function showError(error) {
+    console.log("content load failed with error message: ", error);
+}
+/*********** dom Util Functions ***********/
+
+
+
+
+
+/*********** HTML Injection START ***********/
+// function createComponent({ attributes = {}, tagName = 'div', children = [], eventListeners = {}, responsiveStyles = {} }) {
+//     const $element = $('<' + tagName.toLowerCase() + '/>', { ...attributes });
+
+//     $.each(eventListeners, function (eventName, handler) {
+//         $element.on(eventName, handler);
+//     });
+
+//     $.each(children, function (index, child) {
+//         if (typeof child === 'object') {
+//             $element.append(createComponent(child));
+//         } else if (typeof child === 'string') {
+//             $element.append($(child));
+//         }
+//     });
+
+//     return $element;
+// }
+
+function createComponent({ attributes = {}, tagName = 'div', children = [], eventListeners = {}, responsiveStyles = {} } = {}) {
+    const el = document.createElement(tagName.toLowerCase());
+
+    // Apply attributes (supports common jQuery-like keys: class/className, html, text, style (object), dataset (object), booleans, and general attributes)
+    for (const [key, value] of Object.entries(attributes)) {
+        if (key === 'class' || key === 'className') {
+            el.className = value;
+        } else if (key === 'html') {
+            el.innerHTML = value;
+        } else if (key === 'text') {
+            el.textContent = value;
+        } else if (key === 'style' && typeof value === 'object' && value !== null) {
+            Object.assign(el.style, value);
+        } else if (key === 'dataset' && typeof value === 'object' && value !== null) {
+            Object.assign(el.dataset, value);
+        } else if (typeof value === 'boolean') {
+            if (value) el.setAttribute(key, '');
+            else el.removeAttribute(key);
+        } else {
+            el.setAttribute(key, String(value));
+        }
+    }
+
+    // Attach event listeners
+    for (const [eventName, handler] of Object.entries(eventListeners)) {
+        if (typeof handler === 'function') {
+            el.addEventListener(eventName, handler);
+        }
+    }
+
+    // Append children
+    children.forEach(child => {
+        if (child == null) return; // skip null/undefined
+        if (child instanceof Node) {
+            el.appendChild(child);
+        } else if (typeof child === 'object') {
+            el.appendChild(createComponent(child));
+        } else if (typeof child === 'string') {
+            const template = document.createElement('template');
+            template.innerHTML = child.trim();
+            el.appendChild(template.content.cloneNode(true));
+        } else {
+            el.appendChild(document.createTextNode(String(child)));
+        }
+    });
+
+    return el;
+
+}
+// function createCachableComponent({ attributes = {}, tagName = 'div', children = [], eventListeners = {}, responsiveStyles = {} }) {
+//     const $element = $('<' + tagName.toLowerCase() + '/>', { ...attributes });
+
+//     $.each(eventListeners, function (eventName, handler) {
+//         $element.on(eventName, new Function(handler));
+//     });
+
+//     $.each(children, function (index, child) {
+//         if (typeof child === 'object') {
+//             $element.append(createCachableComponent(child));
+//         } else if (typeof child === 'string') {
+//             $element.append($(child));
+//         }
+//     });
+
+//     return $element;
+// }
+const hideElement = (selector) => document.querySelectorAll(selector).forEach((element) => element.style.display = "none")
+function waitForElement(selector) {
+    return new Promise(resolve => {
+        const checkExist = setInterval(() => {
+            const element = document.querySelector(selector);
+            if (element && element instanceof HTMLElement) {
+                clearInterval(checkExist);
+                resolve(element);
+            }
+        }, 100); // Check every 100 milliseconds
+    });
+}
+/*********** HTML Injection STOP ***********/
+
+
+
+
+
+/*********** CACHING START ***********/
+// async function getStoredElementResponse({ cacheKey = "NG_TEMP_DAT", contentId }) {
+//     //check if the value exist in local storage
+//     const cookieValueforTheElement = localStorage.getItem(cacheKey) ? JSON.parse(atob(localStorage.getItem(cacheKey))) : false
+//     //check if the element exists inside the local storage value and the storage is not expired
+//     if (cookieValueforTheElement?.[contentId] && (new Date().getTime() < parseInt(cookieValueforTheElement[contentId].expiry)))
+//         return cookieValueforTheElement[contentId].response // If value exist return the value
+//     return false //return false and call api
+// }
+// async function storeElementResponsetoStorage({ cacheKey = "NG_TEMP_DAT", contentId, value, expiryTimein_ms = 86400000 }) {
+//     //check if value exist in local storage
+//     const cookieValueforTheElement = localStorage.getItem(cacheKey) ? JSON.parse(atob(localStorage.getItem(cacheKey))) : {}
+//     //create a object value for the element and its response and key
+//     cookieValueforTheElement[contentId] = { response: value, expiry: new Date().getTime() + expiryTimein_ms }
+//     //save the updated value in local storage
+//     localStorage.setItem(cacheKey, btoa(JSON.stringify(cookieValueforTheElement)))
+// }
+/*********** CACHING Methods START ***********/
+
+
+
+
+/*********** Adobe trigger function START ***********/
+function adobeeventTrigger({ name, action, type, link }) {
+
+    if (digitalData && typeof digitalData === "object") {
+        digitalData.event = [{
+            "eventInfo": {
+                "eventAction": action,
+                "type": type,
+                "eventName": name // "BPP Next Gen Experience:Enable" or "BPP Next Gen Experience:Disable"
+            }
+        }]
+        if (window.analytics_et && typeof window.analytics_et === "function") {
+            analytics_et?.();
+        }
+    }
+
+    //Adobe Web XDM 
+    if (adobeDataLayer !== undefined) {
+        const dataItem = generateUserActionAdobeData(name, action, type, link);
+        adobeDataLayer.push(dataItem);
+    }
+}
+function generateUserActionAdobeData(name, action, type, link) {
+
+    var adobeUserActionData = {
+        "event": "useraction",
+        "eventInfo": {
+            "action": action,
+            "element": type,
+            "name": name
+        }
+    };
+    if (link !== undefined) {
+        adobeUserActionData.eventInfo.linkURL = link;
+    }
+    return adobeUserActionData;
+}
+/*********** Adobe trigger function STOP ***********/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+window.adobeDataLayer = window.adobeDataLayer || []
+window.digitalData = window.digitalData || { event: [] }
+window.currEnv = window.currEnv || "PROD"
+
+let APP_DOMAIN = '';
+let B1L_DOMAIN = '';
+let LOGOUT_SERVICE_DOMAIN = '';
+let ACCOUNT_SSO = "";
+let CART_COUNT = 0;
+switch (currEnv.toUpperCase()) {
+    case "DEV":
+    case "TST":
+    case "TEST": {
+        if ((location.href.toLowerCase().indexOf('frz.myboeingfleet.com') >= 0) || (location.href.toLowerCase().indexOf('frz.myboeingfleet.boeing.com') >= 0) || (location.href.toLowerCase().indexOf('onesapecompre.web.boeing.com')) >= 0) {
+            APP_DOMAIN = 'scc5.';
+            LOGOUT_SERVICE_DOMAIN = 'frz.';
+            ACCOUNT_SSO = "https://uat.accounts.digitalaviationservices.com/?location=Fedp";
+        } else {
+            APP_DOMAIN = 'qcc5.';
+            LOGOUT_SERVICE_DOMAIN = 'frz.';
+            ACCOUNT_SSO = "https://test.myaccount.digitalaviationservices.com/?location=Fedp";
+        }
+        break;
+    }
+
+    case "VAL":
+    case "TEST2":
+    case "TST2":
+        APP_DOMAIN = 'qcc5.';
+        LOGOUT_SERVICE_DOMAIN = 'frz.';
+        ACCOUNT_SSO = "https://test.myaccount.digitalaviationservices.com/?location=Fedp";
+        break;
+
+    case "STAGE":
+    case "STG":
+        APP_DOMAIN = 'scc5.';
+        LOGOUT_SERVICE_DOMAIN = 'frz.';
+        ACCOUNT_SSO = "https://uat.accounts.digitalaviationservices.com/?location=Fedp";
+        break;
+
+    case "PROD":
+        APP_DOMAIN = '';
+        LOGOUT_SERVICE_DOMAIN = '';
+        ACCOUNT_SSO = "https://accounts.boeing.com/?location=Fedp";
+        break;
+
+    default: {
+        if ((location.href.toLowerCase().indexOf('https://www.myboeingfleet.com') >= 0) || (location.href.toLowerCase().indexOf('https://myboeingfleet.boeing.com') >= 0)) {
+            APP_DOMAIN = '';
+            LOGOUT_SERVICE_DOMAIN = '';
+            ACCOUNT_SSO = "https://accounts.boeing.com/?location=Fedp";
+        } else {
+            APP_DOMAIN = '';
+            LOGOUT_SERVICE_DOMAIN = 'frz.';
+            ACCOUNT_SSO = "https://test.myaccount.digitalaviationservices.com/?location=Fedp";
+        }
+    }
+}
+
+let date = new Date(), month = '' + (date.getMonth() + 1), day = '' + date.getDate(), year = date.getFullYear(), hours = date.getHours();
+if (month.length < 2) month = '0' + month;
+if (day.length < 2) day = '0' + day;
+const API_VERSION_NUMBER = "26.2.4.4"
+
+
+
+
+
+// Some Global  declared variables
+const SITE_KEY = "bppnextgen"
+const API_DOMAIN_URL = `https://${APP_DOMAIN}shop.boeing.com`
+const API_VERSION_PATH_URL = `bgswebservices/v2/${SITE_KEY}`
+const JSON_RENDERER_PATH = `_ui/responsive/common/js/jsonRender`
+const COMMON_SCRIPTS_PATH = `common/scripts/components`
+const COMPONENT_API_PATH = `bgswebservices/v2/boeing/cms/components`
+const API_URL_PARAMETERS = "lang=en_US&curr=USD&fields=DEFAULT"
+let LOGOUT_URL = `https://${LOGOUT_SERVICE_DOMAIN}logout.boeingservices.com`;
+const LOGOUT_URL_AVID = `https://${LOGOUT_SERVICE_DOMAIN}logout.boeingservices.com/?env=p1as&returnURL=${encodeURIComponent(API_DOMAIN_URL + "/spares/?logout=true")}`;
+const LOGOUT_URL_B1L = `https://${LOGOUT_SERVICE_DOMAIN}logout.boeingservices.com/?env=p1as&returnURL=${encodeURIComponent(API_DOMAIN_URL + "/distribution/?logout=true")}`;
+
+
+
+
+
+// The element selector variables
+
+const LOADING_PARENT_ELEMENT_SELECTOR = "body"
+
+const HEADER_REPLACE_ID = "header-2"
+const ACCOUNT_SELECTOR_REPLACE_ID = "some_account_selector_to_replace"
+const FOOTER_REPLACE_ID = "footer"
+
+let OVERRIDE_SCRIPTS_INJECTION_COMPONENT_UID = "BgsAddScripts_BPPNG"
+let OVERRIDE_STYLES_INJECTION_COMPONENT_UID = "BgsAddStyles_BPPNG"
+let GLOBAL_NAV_COMPONENT_UID = "BgsGlobalNav_Common"
+let HEADER_COMPONENT_UID = "BgsHeader_BPPNG"
+let TOP_NAV_COMPONENT_UID = "BgsTopNav_BPPNG"
+let FOOTER_COMPONENT_UID = "BgsFooter_BPPNG"
+// let TOP_NAV_COMPONENT_UID = "boeingCategoryFlyoutNavComponent"
+// let BENTO_COMPONENT_UID = "BGSBentoIconsComponent"
+// let PROFILE_COMPONENT_UID = "BGSLoginOrMyAccountComponent"
+
+// const TOP_NAV_COMPONENT_API_URL = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/cms/categorynav/component/${TOP_NAV_COMPONENT_UID}?${API_URL_PARAMETERS}`
+// const FOOTER_COMPONENT_API_URL = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/cms/footer/component/${FOOTER_COMPONENT_UID}?${API_URL_PARAMETERS}`
+
+const CREATE_TRANSFER_TOKEN_API_URL = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/transferToken/create`
+const CREATE_OAUTH_TOKEN_API_URL = `${API_DOMAIN_URL}/authorizationserver/oauth/token`
+const MINI_CART_DATA_LIGHT_API_URL = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/jwttoken/lightweightmulticart`
+// const MINI_CART_API_URL = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/jwttoken/consolidatedmulticart`;
+const MINI_CART_MERGER_API_URL = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/multicart`;
+const MINI_CART_DELETE_API_URL = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/deletecart`;
+const TOTAL_ACCOUNTS_API_URL = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/profiles/accounts`
+const PREFFERED_ACCOUNTS_API_URL = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/profiles/getSessionAccountPreference`
+const SAVE_ACCOUNTS_API_URL = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/profiles/saveSessionAccountPreference`
+const SEARCH_SUGGESTIONS_API = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/products/suggestions`
+const SEARCH_PRODUCTS_API = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/products/search`
+const SEARCH_RELATED_CONTENTS_API = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/related/content/search`
+const ACCOUNT_HUB_API = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/profiles/accountHub`;
+const CURRENT_EXPERIENCE_API_URL = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/profiles/getUserExperience?fields=DEFAULT&lang=en_US&curr=USD`;
+const SAVE_EXPERIENCE_API_URL = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/profiles/saveUserExperience?fields=DEFAULT&lang=en_US&curr=USD`;
+
+const BPP_STYLE_CSS_FILE_URL = `${API_DOMAIN_URL}/${JSON_RENDERER_PATH}/bppnextgen/bppNGStyles.css?v=` + API_VERSION_NUMBER
+
+
+const SCRIPTS_TO_INJECT = [
+    `${API_DOMAIN_URL}/${JSON_RENDERER_PATH}/${COMMON_SCRIPTS_PATH}/accountSelector.js?v=${API_VERSION_NUMBER}`,
+    `${API_DOMAIN_URL}/${JSON_RENDERER_PATH}/${COMMON_SCRIPTS_PATH}/accountSelectorBar.js?v=${API_VERSION_NUMBER}`,
+    `${API_DOMAIN_URL}/${JSON_RENDERER_PATH}/${COMMON_SCRIPTS_PATH}/common_search.js?v=${API_VERSION_NUMBER}`,
+    `${API_DOMAIN_URL}/${JSON_RENDERER_PATH}/${COMMON_SCRIPTS_PATH}/footer.js?v=${API_VERSION_NUMBER}`,
+    `${API_DOMAIN_URL}/${JSON_RENDERER_PATH}/${COMMON_SCRIPTS_PATH}/globalNotification.js?v=${API_VERSION_NUMBER}`,
+    `${API_DOMAIN_URL}/${JSON_RENDERER_PATH}/${COMMON_SCRIPTS_PATH}/header.js?v=${API_VERSION_NUMBER}`,
+    `${API_DOMAIN_URL}/${JSON_RENDERER_PATH}/${COMMON_SCRIPTS_PATH}/headerTools.js?v=${API_VERSION_NUMBER}`,
+    `${API_DOMAIN_URL}/${JSON_RENDERER_PATH}/${COMMON_SCRIPTS_PATH}/toggleBar.js?v=${API_VERSION_NUMBER}`,
+    `${API_DOMAIN_URL}/${JSON_RENDERER_PATH}/${COMMON_SCRIPTS_PATH}/top_hat_bar.js?v=${API_VERSION_NUMBER}`,
+    `${API_DOMAIN_URL}/${JSON_RENDERER_PATH}/${COMMON_SCRIPTS_PATH}/navigation.js?v=${API_VERSION_NUMBER}`,
+    `${API_DOMAIN_URL}/${JSON_RENDERER_PATH}/${COMMON_SCRIPTS_PATH}/navigation_menu_desktop.js?v=${API_VERSION_NUMBER}`,
+    `${API_DOMAIN_URL}/${JSON_RENDERER_PATH}/${COMMON_SCRIPTS_PATH}/navigation_menu_mobile.js?v=${API_VERSION_NUMBER}`,
+]
+
+
+
+
+// customization variables
+const ELEMENT_VISIBILITY_STATUS = {
+    topHatBar: {
+        visibility: true,
+        shouldShowGlobalNav: true,
+        shouldShowAccountSelector: true,
+        shouldShowSwapIcon: true,
+        showShoppingAs: true,
+    },
+    showNavigation: false,
+    simplifiedFooter: true,
+}
+
+window.togglebarContent = {
+    titleText: "Learn More",
+    readMoreUrl: "https://portal.myboeingfleet.com/index.html#/Platform/psp/fb5966ec-3e2b-4ac1-afb3-b1caffb10cc8 ",
+    isExternal: true,
+    buttonAlertMessage: "",
+    buttonNameText: "Try the new shopping experience",
+    redirectDomainUrl: `https://${APP_DOMAIN}shop.boeing.com/spares`
+
+}
+let accountSelectorContent = {
+    myAccountRedirectUrl: `https://${APP_DOMAIN}shop.boeing.com/account-hub`
+}
+
+////////////////////////////////////////////////////
+
+
+// State variables
+let TOGGLE_COMPONENT_DEFAULT_STATE = false
+////////////////////////////////////////////////////
+
+/*********** HTTP Methods START ***********/
+function getCookieValue(cookieName) {
+    const cookies = document.cookie.split('; ');
+    const cookieValues = [];
+
+    cookies.forEach(cookie => {
+        const [name, value] = cookie.split('=');
+        if (name === cookieName) {
+            cookieValues.push(value);
+        }
+    });
+
+    return cookieValues.length > 0 ? cookieValues[0] : "";
+}
+function setCookie({ name, value, path = "/", domain, maxAge = "31536000", expires }) {
+    const cookieValue = `${name}=${value};${domain ? "domain=" + domain + ";" : ""}path=${path};${expires ? "expires=" + expires : "max-age=" + maxAge};`
+    document.cookie = cookieValue;
+}
+async function setTbCookieVal(newVal) {
+
+    setCookie({ name: 'commonHdrTgl', value: newVal, maxAge: "session" })
+    if (window.location.href.includes(".boeing.com")) {
+        setCookie({ name: 'bppTGLExp', value: newVal, domain: "boeing.com", maxAge: "session" })
+    }
+
+    return true
+}
+async function getUrlTransferParameters(url = "") {
+    try {
+        if (url) {
+            // const token = await transferTokenPostAPI()
+            const current_domain = window.location.origin
+            const updatedUrl = new URL(url)
+            // updatedUrl.searchParams.set("tt", token)
+            updatedUrl.searchParams.set("parentId", current_domain)
+            updatedUrl.searchParams.set("refApp", btoa("Auth"))
+            // if (token && token !== undefined && typeof token === "string")
+            return (updatedUrl.href)
+        }
+        return false
+
+    } catch (e) { console.log("generating the transfer Token for url failed") }
+
+}
+function decodeToken(token) {
+    const _decodeToken = (token) => {
+        try {
+            return JSON.parse(atob(token));
+        } catch {
+            return;
+        }
+    }; return token
+        .split('.')
+        .map(token => _decodeToken(token))
+        .reduce((acc, curr) => {
+            if (!!curr) acc = { ...acc, ...curr };
+            return acc;
+        }, Object.create(null));
+}
+function getSessionId() {
+    try {
+        const bppocc = getJWTToken()
+        if (bppocc) {
+            const decodedBppOcc = decodeToken(bppocc)
+            if (decodedBppOcc["SESSION_ID"]) return decodedBppOcc["SESSION_ID"]
+            return false
+        }
+
+    } catch (e) {
+        return false
+    }
+}
+function getJWTToken() {
+    // let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBVklBVElPTl9JRCI6InQzNDg2NjExIiwiaXNzIjoiQm9laW5nIiwiZXhwIjoxNzE1MzI2MTc4fQ.5tkDR-CX44CL6_mUZ19EwJN9S4NC2VF_rQfGpKpPzvI"
+    let token = "";
+    try {
+        const cookies = document.cookie.split(';')
+        const bppoccValue = cookies.find(cookie => cookie.includes('bppocc'))
+        if (bppoccValue) {
+            token = bppoccValue?.split('=')[1]
+        }
+        if (token)
+            return token
+        return false
+    } catch (e) { showError(e) }
+}
+async function transferTokenPostAPI() {
+    try {
+        const token = getJWTToken()
+        const headers = await getAPIHeaders({ isAuthed: false, method: "POST" })
+        const body = JSON.stringify({ token })
+        const transferTokenPromise = await postAPI(CREATE_TRANSFER_TOKEN_API_URL, body, headers)
+        if (transferTokenPromise.ok) {
+            const transferToken = await transferTokenPromise.text()
+            return transferToken
+        } else {
+            console.log("Something went wrong try again later : ", { transferTokenPromise })
+        }
+    } catch (e) { showError(e) }
+}
+// async function oAuthTokenAPI() {
+//     try {
+//         const storedoAuthToken = await getStoredElementResponse({ cacheKey: "NG_TS_KEY", contentId: "oauth" })
+//         if (false && storedoAuthToken) {
+//             return storedoAuthToken
+//         } else {
+//             const headers = new Headers({
+//                 'Accept': 'application/json',
+//                 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+//             })
+//             const transfer_Token = await transferTokenPostAPI()
+//             const body = {
+//                 client_id: "mobile_android_bpp",
+//                 client_secret: "secret",
+//                 grant_type: "custom",
+//                 transfer_Token,
+//             }
+//             const APIBody = Object.keys(body).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(body[key])).join('&');
+
+//             const oAuthPromise = await postAPI(CREATE_OAUTH_TOKEN_API_URL, APIBody, headers)
+//             if (oAuthPromise.ok) {
+//                 const oAuthData = await oAuthPromise.json()
+//                 await storeElementResponsetoStorage({ cacheKey: "NG_TS_KEY", contentId: "oauth", value: oAuthData, expiryTimein_ms: parseInt(oAuthData.expires_in) * 1000 })
+//                 return oAuthData
+//             } else {
+//                 console.log("Something went wrong try again later : ", { oAuthPromise })
+//             }
+//         }
+//     } catch (e) { showError(e) }
+// }
+async function getAPIHeaders({ isAuthed = false, method = "GET", hasSession = false }) {
+    try {
+        const headers = {
+            'Accept': 'application/json',
+        }
+        if (method === "POST") {
+            headers["Content-Type"] = 'application/json'
+        }
+        if (isAuthed && isAuthed !== "false") {
+            // const token = await oAuthTokenAPI()
+            const isBPPNG = sessionStorage.getItem("boe") === "y"
+            if (isAuthed && isBPPNG) headers["Authorization"] = `BPP-JWT${getJWTToken()}`
+        }
+        const sessionId = getSessionId()
+        if (hasSession && sessionId) headers["bppngsessionid"] = sessionId
+
+        return new Headers(headers)
+    } catch (e) { showError(e) }
+}
+async function fetchAPI(url, headers = {}) {
+    try {
+        const response = await fetch(url, { headers })
+        const resJSON = await response.json()
+        return resJSON
+    } catch (e) { showError(e) }
+}
+async function postAPI(url, body, headers = {}) {
+    const method = "POST"
+    try {
+        const postAPIResponse = await fetch(url, { method, headers, body })
+        return postAPIResponse
+    } catch (e) { showError(e) }
+}
+async function injectLink({ href, media = "all", rel = "stylesheet", type = "text/css", onload = () => { } }) {
+    return new Promise((resolve, reject) => {
+        const link = document.createElement('link');
+        link.href = href;
+        link.type = type
+        link.rel = rel
+        link.media = media
+        link.addEventListener('load', async () => { onload(); resolve() });
+        link.addEventListener('error', async (e) => { showError(e); resolve() });
+        document.head.appendChild(link);
+    });
+}
+async function injectScript(src, parentSelector = "head") {
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.type = 'text/javascript'
+        script.addEventListener('load', resolve);
+        script.addEventListener('error', e => reject(e.error));
+        const parentElement = $(parentSelector).get(0); // Convert jQuery object to DOM element
+        parentElement.appendChild(script);
+    });
+}
+/*********** HTTP Methods STOP ***********/
+
+class CacheResponsesd {
+    constructor(timeout = 2700000) { // default for 5 minutes
+        this.data = {};
+        this.timeOut = timeout;
+    }
+
+    getResponse(key) {
+        if (this.isExpired(key)) {
+            this.deleteCache(key);
+            return false
+        }
+        return this.data[key];
+    }
+
+    setResponse(key, response) {
+        this.data[key] = {
+            response,
+            timeStamp: new Date().getTime(),
+        };
+    }
+
+    isExpired(key) {
+        return this.data[key] ? parseInt(this.data[key].timeStamp + this.timeOut) < new Date().getTime() : false;
+    }
+
+    deleteCache(key) {
+        delete this.data[key];
+    }
+}
+
+const ACCOUNT_SELECTOR_CACHE = new CacheResponsesd()
+
+
+
+
+
+
+
+class SERVER_CACHE {
+    constructor() {
+        // Initialization code here
+        this.data = {}
+    }
+
+    getCookieValue(cookieName) {
+        const cookies = document.cookie.split('; ');
+        const cookieValues = [];
+
+        cookies.forEach(cookie => {
+            const [name, value] = cookie.split('=');
+            if (name === cookieName) {
+                cookieValues.push(value);
+            }
+        });
+
+        return cookieValues.length > 0 ? cookieValues[0] : "";
+    }
+    setCookie({ name, value, path = "/", domain, maxAge = "31536000", expires }) {
+        const cookieValue = `${name}=${value};${domain ? "domain=" + domain + ";" : ""}path=${path};${expires ? "expires=" + expires : "max-age=" + maxAge};`
+        document.cookie = cookieValue;
+    }
+    deleteCookie(name) {
+        document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    }
+    storeData({ method = "DEFAULT", value = false, key, expiry_time }) {
+        try {
+            if (!key || !value) return
+            switch (method.toLocaleUpperCase()) {
+                case "LOCAL": {
+                    localStorage.setItem(key, value);
+                    break;
+                }
+                case "SESSION": {
+                    sessionStorage.setItem(key, value);
+                    break;
+                }
+                case "COOKIE": {
+                    this.setCookie({ name: key, value });
+                    break;
+                }
+                default: {
+                    this.data[key] = {
+                        value,
+                        timeStamp: new Date().getTime(),
+                    };
+                }
+            }
+        } catch (e) { console.log({ e }); return }
+    }
+
+    getDataFromStorage({ method = "DEFAULT", key }) {
+        try {
+            if (!key) return
+            switch (method.toLocaleUpperCase()) {
+                case "LOCAL": return localStorage.getItem(key)
+                case "SESSION": return sessionStorage.getItem(key);
+                case "COOKIE": return this.getCookieValue(key);
+                default: return this.data[key]
+            }
+        } catch (e) { console.log({ e }); return }
+    }
+    clearDataFromStorage({ method = "DEFAULT", key }) {
+        try {
+            if (!key) return
+            switch (method.toLocaleUpperCase()) {
+                case "LOCAL": return localStorage.removeItem(key)
+                case "SESSION": return sessionStorage.removeItem(key);
+                case "COOKIE": return this.deleteCookie(key);
+                default: return this.data[key]
+            }
+        } catch (e) { console.log({ e }); return }
+    }
+}
+
+class HTTP_SERVER extends SERVER_CACHE {
+    constructor() {
+        // Initialization code here
+        super();
+    }
+    parseDataIntoUrl(data = {}) {
+        try {
+            const defaultObj = { lang: 'en_US', curr: 'USD' }
+            const searchParams = new URLSearchParams({ ...data, ...defaultObj });
+            return searchParams.toString()
+        } catch (e) { }
+    }
+    decodeToken(token) {
+        const _decodeToken = (token) => {
+            try {
+                return JSON.parse(atob(token));
+            } catch {
+                return;
+            }
+        }; return token
+            .split('.')
+            .map(token => _decodeToken(token))
+            .reduce((acc, curr) => {
+                if (!!curr) acc = { ...acc, ...curr };
+                return acc;
+            }, Object.create(null));
+    }
+    getBPPOCCToken() {
+        try {
+            const token = this.getDataFromStorage({ method: "COOKIE", key: "bppocc" })
+            if (token) return token
+            return false
+        } catch (e) { return false }
+    }
+    getSessionId() {
+        try {
+            const bppocc = this.getBPPOCCToken()
+            if (bppocc) {
+                const decodedBppOcc = this.decodeToken(bppocc)
+                if (decodedBppOcc["SESSION_ID"]) return decodedBppOcc["SESSION_ID"]
+                return false
+            }
+
+        } catch (e) {
+            return false
+        }
+    }
+    async getAPIHeaders({ isAuthed = false, method = "GET", hasSession = false }) {
+        try {
+            const headers = {
+                'Accept': 'application/json',
+            }
+            if (method === "POST") {
+                headers["Content-Type"] = 'application/json'
+            }
+            if (isAuthed && isAuthed !== "false") {
+                // const token = await oAuthTokenAPI()
+                const isBPPNG = sessionStorage.getItem("boe") === "y"
+                if (isBPPNG) {
+                    const token = this.getBPPOCCToken()
+                    if (isAuthed && token) headers["Authorization"] = `BPP-JWT${token}`
+                }
+            }
+            if (hasSession) {
+                const sessionId = this.getSessionId()
+                if (sessionId) headers["bppngsessionid"] = sessionId
+            }
+
+            return new Headers(headers)
+        } catch (e) { showError(e) }
+    }
+    // Common function to handle responses
+    async fetchAPI(url, headers = {}) {
+        try {
+            const headers = await this.getAPIHeaders({ isAuthed: true })
+            const response = await fetch(url, { headers })
+            const resJSON = await response.json()
+            return resJSON
+        } catch (e) { console.error(e) }
+    }
+
+    async postAPI(url, body, headers = {}) {
+        try {
+            const method = "POST"
+            const headers = await this.getAPIHeaders({ method, isAuthed: true });
+            const postAPIResponse = await fetch(url, { method, headers, body })
+            const res = await postAPIResponse.json()
+            return res
+        } catch (e) { showError(e) }
+    }
+}
+
+class INJECTED_API_AUTH_SERVICE extends HTTP_SERVER {
+    // Private values which are to constants
+    #CURRENT_EXPERIENCE_API_URL = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/profiles/userExperience?fields=FULL&lang=en_US&curr=USD`;
+    #SAVE_EXPERIENCE_API_URL = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/profiles/saveUserExperience?fields=FULL&lang=en_US&curr=USD`;
+    #ACCOUNTS_HUB_API = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/profiles/accountHub?fields=FULL&lang=en_US&curr=USD`;
+    #GET_DRAGGABLE_AVATAR_LINKS_API_URL = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/profiles/avatar/retrieve?fields=FULL&lang=en_US&curr=USD`;
+    #UPDATE_DRAGGABLE_AVATAR_LINKS_ORDER_API_URL = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/profiles/avatar/create-update?fields=FULL&lang=en_US&curr=USD`;
+    #TOTAL_ACCOUNTS_API_URL = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/profiles/accounts/?fields=FULL&lang=en_US&curr=USD`;
+    #PREFFERED_ACCOUNTS_API_URL = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/profiles/getSessionAccountPreference/?fields=FULL&lang=en_US&curr=USD`;
+    #SAVE_ACCOUNTS_API_URL = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/profiles/saveSessionAccountPreference/?fields=FULL&lang=en_US&curr=USD`;
+
+    #GLOBAL_NAV_COMPONENT_URL = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/cms/globalnav/component/${GLOBAL_NAV_COMPONENT_UID}?fields=FULL&lang=en_US&curr=USD`;
+    #TOP_NAV_COMPONENT_URL = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/cms/categorynav/component/${TOP_NAV_COMPONENT_UID}?fields=FULL&lang=en_US&curr=USD`
+    #FOOTER_COMPONENT_URL = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/cms/footer/component/${FOOTER_COMPONENT_UID}?fields=FULL&lang=en_US&curr=USD`;
+
+    // state variables that will change
+    experienceDataPromise
+    accountsHubDataPromise
+    sessionAccountProfilesPromise
+    sessionAccountPreferencePromise
+    draggableLinksPromise
+
+    //component UID promise
+    globalNavComponentfetchPromise
+    navigationComponentfetchPromise
+    footerComponentfetchPromise
+
+    isASM = false;
+    isDSI = false;
+    isBPPNG = false;
+    isClassic = false;
+
+    constructor() {
+        super(); // Call the parent class constructor
+    }
+
+    setCurrentInjectedExperience() {
+
+    }
+
+    async fetchExperienceApi() {
+        if (this.experienceDataPromise) return this.experienceDataPromise;
+        // create and store the promise (do NOT replace it later with the resolved value)
+        this.experienceDataPromise = (async () => {
+            try {
+                const payload = JSON.stringify({ "userId": "", "authType": "" });
+                const res = await this.postAPI(this.#CURRENT_EXPERIENCE_API_URL, payload);
+                // return the response without overwriting the promise field
+                return res;
+            } catch (err) {
+                // clear the promise on error so callers can retry
+                this.experienceDataPromise = null;
+                throw err;
+            }
+        })();
+        return this.experienceDataPromise;
+    }
+
+    async fetchAccountsHub() {
+        if (this.accountsHubDataPromise) return this.accountsHubDataPromise;
+        this.accountsHubDataPromise = (async () => {
+            try {
+                let parsedURL = this.#ACCOUNTS_HUB_API;
+                if (ASM_USER) {
+                    const res = await this.getUserExperienceAPIResposne();
+                    if ((res?.asm?.asmSession === true || res?.asm?.asmSession) && "assistingCustomerName" in res.asm) {
+                        // return lightweight response without overwriting the stored promise
+                        return { userName: res.asm.assistingCustomerName };
+                    }
+                    if ("asm" in res && "assistingCustomerUid" in res.asm) {
+                        parsedURL += `&simUserId=${res.asm.assistingCustomerUid}&asmpinglogin=true`;
+                    }
+                }
+                const headers = await getAPIHeaders({ isAuthed: true });
+                const res = await this.fetchAPI(parsedURL, headers);
+                return res;
+            } catch (err) {
+                this.accountsHubDataPromise = null;
+                throw err;
+            }
+        })();
+        return this.accountsHubDataPromise;
+    }
+    async fetchdraggableProfileLinks() {
+        if (this.draggableLinksPromise) return this.draggableLinksPromise;
+        this.draggableLinksPromise = (async () => {
+            try {
+                let parsedURL = this.#GET_DRAGGABLE_AVATAR_LINKS_API_URL;
+                if (ASM_USER) {
+                    const res = await this.getUserExperienceAPIResposne();
+                    if ((res?.asm?.asmSession === true || res?.asm?.asmSession) && "assistingCustomerName" in res.asm) {
+                        // return lightweight response without overwriting the stored promise
+                        return { userName: res.asm.assistingCustomerName };
+                    }
+                    if ("asm" in res && "assistingCustomerUid" in res.asm) {
+                        parsedURL += `&simUserId=${res.asm.assistingCustomerUid}&asmpinglogin=true`;
+                    }
+                }
+                
+                const res = await this.postAPI(parsedURL);
+                return res;
+            } catch (err) {
+                this.draggableLinksPromise = null;
+                throw err;
+            }
+        })();
+        return this.draggableLinksPromise;
+    }
+
+    async fetchAccountsPref() {
+        if (this.sessionAccountPreferencePromise) return this.sessionAccountPreferencePromise;
+        this.sessionAccountPreferencePromise = (async () => {
+            try {
+                let parsedURL = this.#PREFFERED_ACCOUNTS_API_URL;
+                if (ASM_USER) {
+                    const res = await this.getUserExperienceAPIResposne();
+                    if ("asm" in res && "assistingCustomerUid" in res.asm) {
+                        parsedURL += `&simUserId=${res.asm.assistingCustomerUid}&asmpinglogin=true`;
+                    }
+                }
+                const headers = await getAPIHeaders({ isAuthed: true, hasSession: true });
+                const res = await this.fetchAPI(parsedURL, headers);
+                return res;
+            } catch (err) {
+                this.sessionAccountPreferencePromise = null;
+                throw err;
+            }
+        })();
+        return this.sessionAccountPreferencePromise;
+    }
+
+    async fetchAccountsaccountProfiles() {
+        if (this.sessionAccountProfilesPromise) return this.sessionAccountProfilesPromise;
+        this.sessionAccountProfilesPromise = (async () => {
+            try {
+                let parsedURL = this.#TOTAL_ACCOUNTS_API_URL;
+                if (ASM_USER) {
+                    const res = await this.getUserExperienceAPIResposne();
+                    if ("asm" in res && "assistingCustomerUid" in res.asm) {
+                        parsedURL += `&simUserId=${res.asm.assistingCustomerUid}&asmpinglogin=true`;
+                    }
+                }
+                const headers = await getAPIHeaders({ isAuthed: true });
+                const res = await this.fetchAPI(parsedURL, headers);
+                return res;
+            } catch (err) {
+                this.sessionAccountProfilesPromise = null;
+                throw err;
+            }
+        })();
+        return this.sessionAccountProfilesPromise;
+    }
+
+    async fetchGlobalNav() {
+        if (this.globalNavComponentfetchPromise) return this.globalNavComponentfetchPromise;
+        this.globalNavComponentfetchPromise = (async () => {
+            try {
+                let parsedURL = this.#GLOBAL_NAV_COMPONENT_URL;
+                if (ASM_USER) {
+                    const res = await this.getUserExperienceAPIResposne();
+                    if ("asm" in res && "assistingCustomerUid" in res.asm) {
+                        parsedURL += `&simUserId=${res.asm.assistingCustomerUid}&asmpinglogin=true`;
+                    }
+                }
+                const headers = await getAPIHeaders({ isAuthed: true });
+                const res = await this.fetchAPI(parsedURL, headers);
+                return res;
+            } catch (err) {
+                this.globalNavComponentfetchPromise = null;
+                throw err;
+            }
+        })();
+        return this.globalNavComponentfetchPromise;
+    }
+    async fetchTopNav() {
+        if (this.navigationComponentfetchPromise) return this.navigationComponentfetchPromise;
+        this.navigationComponentfetchPromise = (async () => {
+            try {
+                let parsedURL = this.#TOP_NAV_COMPONENT_URL;
+                if (ASM_USER) {
+                    const res = await this.getUserExperienceAPIResposne();
+                    if ("asm" in res && "assistingCustomerUid" in res.asm) {
+                        parsedURL += `&simUserId=${res.asm.assistingCustomerUid}&asmpinglogin=true`;
+                    }
+                }
+                const headers = await getAPIHeaders({ isAuthed: true });
+                const res = await this.fetchAPI(parsedURL, headers);
+                return res;
+            } catch (err) {
+                this.navigationComponentfetchPromise = null;
+                throw err;
+            }
+        })();
+        return this.navigationComponentfetchPromise;
+    }
+    async fetchFooter() {
+        if (this.footerComponentfetchPromise) return this.footerComponentfetchPromise;
+        this.footerComponentfetchPromise = (async () => {
+            try {
+                let parsedURL = this.#FOOTER_COMPONENT_URL;
+                if (ASM_USER) {
+                    const res = await this.getUserExperienceAPIResposne();
+                    if ("asm" in res && "assistingCustomerUid" in res.asm) {
+                        parsedURL += `&simUserId=${res.asm.assistingCustomerUid}&asmpinglogin=true`;
+                    }
+                }
+                const headers = await getAPIHeaders({ isAuthed: true });
+                const res = await this.fetchAPI(parsedURL, headers);
+                return res;
+            } catch (err) {
+                this.footerComponentfetchPromise = null;
+                throw err;
+            }
+        })();
+        return this.footerComponentfetchPromise;
+    }
+
+    async getUserExperienceAPIResposne(refreshStatus = false) {
+        if (refreshStatus) {
+            this.experienceDataPromise = null;
+        }
+        const expRes = await this.fetchExperienceApi();
+        if ("errors" in expRes) return false;
+        return expRes;
+    }
+
+    async getUserName(refreshStatus = false) {
+        if (refreshStatus) {
+            this.accountsHubDataPromise = null;
+        }
+        const expRes = await this.fetchAccountsHub();
+        if ("errors" in expRes) return false;
+        return expRes;
+    }
+    async getAvatarDropdownDraggableLinks(refreshStatus = false) {
+        if (refreshStatus) {
+            this.draggableLinksPromise = null;
+        }
+        const expRes = await this.fetchdraggableProfileLinks();
+        if ("errors" in expRes) return false;
+        return expRes;
+    }
+    async getCompleteAccountData(refreshStatus = false) {
+        if (refreshStatus) {
+            // clear the correct promise fields
+            this.sessionAccountProfilesPromise = null;
+            this.sessionAccountPreferencePromise = null;
+        }
+        const accountsData = await Promise.all([this.fetchAccountsPref(), this.fetchAccountsaccountProfiles()]);
+        return { pref: accountsData[0], details: accountsData[1] };
+    }
+
+    async getGlobalNavComponentData(refreshStatus = false) {
+        if (refreshStatus) {
+            this.globalNavComponentfetchPromise = null;
+        }
+        const expRes = await this.fetchGlobalNav();
+        return expRes;
+    }
+
+    async getTopNavComponentData(refreshStatus = false) {
+        if (refreshStatus) {
+            this.navigationComponentfetchPromise = null;
+        }
+        const expRes = await this.fetchTopNav();
+        return expRes;
+    }
+
+    async getFooterComponentData(refreshStatus = false) {
+        if (refreshStatus) {
+            this.footerComponentfetchPromise = null;
+        }
+        const expRes = await this.fetchFooter();
+        return expRes;
+    }
+
+    async saveAccountPreferenceData(body) {
+        let parsedURL = this.#SAVE_ACCOUNTS_API_URL;
+        if (ASM_USER) {
+            const userRes = await this.getUserExperienceAPIResposne();
+            if ("asm" in userRes && "assistingCustomerUid" in userRes.asm) {
+                parsedURL += `&simUserId=${userRes.asm.assistingCustomerUid}&asmpinglogin=true`;
+            }
+        }
+        const headers = await getAPIHeaders({ method: "POST", isAuthed: true, hasSession: true });
+        const response = await this.postAPI(parsedURL, JSON.stringify(body), headers);
+        return response;
+    }
+
+    // ... rest of class ...
+}
+
+class GLOBAL_NAVIGATION_CONTROLLER extends HTTP_SERVER {
+    constructor() {
+        super(); // Call the parent class constructor
+        this.data = false
+    }
+
+    // Method to fetch response using the inherited fetchResponse method
+    async fetchData() {
+        const url = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/cms/globalnav/component/${GLOBAL_NAV_COMPONENT_UID}?${API_URL_PARAMETERS}`
+        const res = await this.fetchAPI(url);
+        this.data = res
+    }
+    async getData() {
+        return this.data
+    }
+}
+
+// class HEADER_CONTROLLER extends HTTP_SERVER {
+//     constructor() {
+//         super(); // Call the parent class constructor
+//         this.data = false
+//     }
+
+//     // Method to fetch response using the inherited fetchResponse method
+//     async fetchData() {
+//         const url = `${API_DOMAIN_URL}/${COMPONENT_API_PATH}/${HEADER_COMPONENT_UID}?${API_URL_PARAMETERS}`
+//         const res = await this.fetchAPI(url);
+//         this.data = res
+//     }
+//     async getData() {
+//         return this.data
+//     }
+// }
+
+class HEADER_CONTROLLER extends HTTP_SERVER {
+    constructor() {
+        super(); // Call the parent class constructor
+        this.data = false
+        this.cartData = false
+        this.headerToolsData = {}
+    }
+
+    async fetchDetailsFromAPI(url, isAuthed = false, hasSession = false) {
+        try {
+            const headers = await getAPIHeaders({ isAuthed, hasSession })
+            const componentAPIResponse = await this.fetchAPI(url, headers)
+            return componentAPIResponse
+        } catch (e) { showError(e) }
+    }
+    async getAllComponentsData(components = '') {
+        if (components) {
+            let len = components.split(' ').length;
+            let PARAMS = `${API_URL_PARAMETERS}&currentPage=0&pageSize=${len}&componentIds=${components.replaceAll(' ', '%2C')}`;
+            try {
+                const url = `${API_DOMAIN_URL}/${COMPONENT_API_PATH}?${PARAMS}`
+                const componentData = await this.fetchDetailsFromAPI(url)
+                return componentData
+            } catch (e) { showError(e) }
+        }
+    }
+
+    async fetchComponentFromUid(COMPONENT_ID) {
+        try {
+            if (COMPONENT_ID && typeof COMPONENT_ID === "string") {
+                const url = `${API_DOMAIN_URL}/${COMPONENT_API_PATH}/${COMPONENT_ID}?${API_URL_PARAMETERS}`
+                const componentData = await this.fetchDetailsFromAPI(url)
+                return componentData
+            }
+        } catch (e) { showError(e) }
+    }
+    async fetchMultipleComponentsFromUid(COMPONENTS_IDS) {
+        try {
+            if (COMPONENTS_IDS && typeof COMPONENTS_IDS === "string") {
+                const componentPromise = await Promise.all(COMPONENTS_IDS.split(" ").map(comp_uid => this.fetchComponentFromUid(comp_uid)))
+                return componentPromise
+            }
+        } catch (e) { showError(e) }
+    }
+    async getCompleteDataFromAPI(data) {
+        const childrenList = data?.bgsNavigationLinksCollection || data?.cmsLinksList || data?.navEntries || data?.bgsAccountNavigationLinksCollection
+
+        let modifiedData = data
+        if (childrenList) {
+            const navListArray1 = await this.fetchMultipleComponentsFromUid(childrenList)
+            const navListArray = await Promise.all(navListArray1.map(async (dat) => await this.getCompleteDataFromAPI(dat)))
+            modifiedData = { ...data, navListArray }
+        }
+        return modifiedData
+    }
+    // Method to fetch response using the inherited fetchResponse method
+    async fetchUniqueHeaderCompleteData(url) {
+        const res = await this.fetchAPI(url)
+        const arr = await this.getAllComponentsData(res?.slotList).then(res => res.component)
+        const arrRes = await Promise.all(arr.map(item => this.getCompleteDataFromAPI(item)))
+        const finalObj = structuredClone(res)
+        finalObj["headerToolsData"] = arrRes
+        return finalObj
+    }
+
+    async fetchData() {
+        const url = `${API_DOMAIN_URL}/${COMPONENT_API_PATH}/${HEADER_COMPONENT_UID}?${API_URL_PARAMETERS}`
+        const res = await this.fetchUniqueHeaderCompleteData(url);
+        this.data = res
+    }
+    async getData() {
+        return this.data
+    }
+    getheaderToolsData() {
+        return this.data.headerToolsData
+    }
+    async getCartData({ body, refresh = false }) {
+        if (!this.cartData || refresh) {
+            const payload = JSON.stringify(body)
+            const res = await this.postAPI(`${MINI_CART_MERGER_API_URL}?reload=true&${API_URL_PARAMETERS}`, payload)
+            this.cartData = res
+            return this.cartData
+        } else {
+            return this.cartData
+        }
+    }
+    async deleteCartItems({ body }) {
+        const payload = JSON.stringify(body);
+        const res = await this.postAPI(`${MINI_CART_DELETE_API_URL}`, payload);
+        return res;
+    }
+}
+
+class SEARCH_CONTROLLER extends HTTP_SERVER {
+    constructor() {
+        super(); // Call the parent class constructor
+        this.suggestions_data = false
+        this.related_contents_data = false
+        this.products_search_data = false
+        this.recent_search_data = false
+    }
+
+
+    getRecentSearchFromStorage() {
+        try {
+            const recentSearchList = this.getDataFromStorage({ method: "LOCAL", key: `bgs_hrs_boeing` })
+            if (Array.isArray(recentSearchList) && recentSearchList.length >= 0) return recentSearchList
+            if (recentSearchList && typeof recentSearchList === "string") {
+                const parsedList = JSON.parse(recentSearchList)
+                if (typeof parsedList === "object" && Array.isArray(parsedList) && parsedList.length >= 0) return parsedList
+            }
+            return false
+        } catch (e) { return false }
+    }
+    clearRecentSearchFromStorage(clear_method = "ALL", key) {
+        if (clear_method === "SINGLE") {
+            const recentSearchList = this.getRecentSearchFromStorage() || [];
+            const newList = recentSearchList.filter(({ text }) => text !== key)
+            this.storeData({ method: "LOCAL", key: "bgs_hrs_boeing", value: JSON.stringify(newList) });
+        } else {
+            this.storeData({ method: "LOCAL", key: "bgs_hrs_boeing", value: JSON.stringify([]) });
+        }
+        return
+    }
+    saveRecentSearchtoStorage(searchQuery) {
+        const recentSearchList = this.getRecentSearchFromStorage() || [];
+        let newList = []
+        if (recentSearchList.some(obj => obj.text === searchQuery)) {
+            newList = recentSearchList.map(obj => {
+                if (obj.text === searchQuery) {
+                    obj.count += 1
+                }
+                return obj
+            })
+        } else {
+            newList = structuredClone(recentSearchList)
+            newList.push({ text: searchQuery, count: 1 })
+        }
+        this.storeData({ method: "LOCAL", key: "bgs_hrs_boeing", value: JSON.stringify(newList) });
+    }
+
+    async getSuggestions(body = {}) {
+        const contentBody = this.parseDataIntoUrl(body)
+        const API_URL = `${SEARCH_SUGGESTIONS_API}${contentBody ? "?" + contentBody : ""}`
+        const cachedData = this.getDataFromStorage({ key: API_URL })
+        if (cachedData) {
+            return cachedData.value
+        } else {
+            const value = await this.fetchAPI(API_URL)
+            this.storeData({ key: API_URL, value })
+            return value
+        }
+    }
+    async getProducts(body = {}) {
+        const contentBody = this.parseDataIntoUrl(body)
+        const API_URL = `${SEARCH_PRODUCTS_API}${contentBody ? "?" + contentBody : ""}`
+        const cachedData = this.getDataFromStorage({ key: API_URL })
+        if (cachedData) {
+            return cachedData.value
+        } else {
+            const value = await this.fetchAPI(API_URL)
+            this.storeData({ key: API_URL, value })
+            return value
+        }
+    }
+    async getRelatedContents(body = {}) {
+        const contentBody = this.parseDataIntoUrl(body)
+        const API_URL = `${SEARCH_RELATED_CONTENTS_API}${contentBody ? "?" + contentBody : ""}`
+        const cachedData = this.getDataFromStorage({ key: API_URL })
+        if (cachedData) {
+            return cachedData.value
+        } else {
+            const value = await this.fetchAPI(API_URL)
+            this.storeData({ key: API_URL, value })
+            return value
+        }
+    }
+}
+
+class TOP_NAVIGATION_CONTROLLER extends HTTP_SERVER {
+    constructor() {
+        super(); // Call the parent class constructor
+        this.data = false
+    }
+
+    createObj({ linkName = "", url = "/", external = "false" }) {
+        return {
+            "linkUrl": {
+                "external": external,
+                "name": linkName,
+                linkName,
+                url,
+            },
+            "menuType": "PRODUCT",
+            "navListArray": [],
+            "name": linkName,
+        }
+    }
+    pushArr(arr = [], ind, value) {
+
+        if (ind >= arr.length) {
+            // If index is greater than or equal to array length, push at the end
+            arr.push(value);
+        } else {
+            // Otherwise, insert at the index by shifting elements to the right
+            arr.splice(ind, 0, value);
+        }
+        return arr
+    }
+    parseTopNavigationData(data) {
+        if (sessionStorage.getItem("boe") === 'y')
+            return data
+
+        let showTransferLink = false;
+        let showCustomerLink = false;
+        let showExpressOrderLink = false;
+        let showBulkOrderLink = false;
+        let newArr = []
+        const that = this
+
+        $(OLD_TOP_NAV_MENU).find("> ul > li").each(function (index, item) {
+            const oldLinkName = item.children[0]?.textContent?.trim() ?? "";
+            if (oldLinkName === "Customers") { showCustomerLink = that.createObj({ linkName: "Customers", url: "/partpage/pp/en/USD/customercodes/search", external: "false" }); }
+            if (oldLinkName === "Transfers") { showTransferLink = that.createObj({ linkName: "Transfers", url: "/partpage/pp/en/USD/transfers/searchTransfers", external: "false" }); }
+            if (oldLinkName === "Orders" && item.innerHTML.includes("Express Orders")) { showExpressOrderLink = that.createObj({ linkName: "Express Orders", url: "/partpage/pp/en/USD/quick/orders", external: "false" }); }
+            if (oldLinkName === "Orders" && item.innerHTML.includes("Bulk Order")) { showBulkOrderLink = that.createObj({ linkName: "Bulk Order", url: "/partpage/pp/en/USD/bulk/orders", external: "false" }); }
+        })
+
+        if (Array.isArray(data.navListArray)) {
+            newArr = structuredClone(data.navListArray)
+
+        } else if (typeof data.navListArray === "object") {
+            newArr = [structuredClone(data.navListArray)]
+        }
+
+        if (showTransferLink) newArr = this.pushArr(newArr, 2, showTransferLink)
+        if (showCustomerLink) newArr = this.pushArr(newArr, -2, showCustomerLink)
+        if (showExpressOrderLink) {
+            newArr = newArr.map(item => {
+                if (item.name === "Orders") {
+                    item.navListArray.push(showExpressOrderLink)
+                    return item
+                }
+                return item
+            })
+        }
+        if (showBulkOrderLink) {
+            newArr = newArr.map(item => {
+                if (item.name === "Orders") {
+                    item.navListArray.push(showBulkOrderLink)
+                    return item
+                }
+                return item
+            })
+        }
+        data.navListArray = newArr
+        return data
+    }
+
+    // Method to fetch response using the inherited fetchResponse method
+    async fetchData() {
+        const url = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/cms/categorynav/component/${TOP_NAV_COMPONENT_UID}?${API_URL_PARAMETERS}`
+        const res = await this.fetchAPI(url);
+        try {
+            if (res.errors) {
+                this.data = false
+            }
+            else {
+                const parsedData = this.parseTopNavigationData(res)
+                console.log({ parsedData })
+                this.data = parsedData
+            }
+
+        } catch (e) {
+            console.log(e)
+            this.data = false
+        }
+    }
+    async getData() {
+        return this.data
+    }
+}
+
+class FOOTER_CONTROLLER extends HTTP_SERVER {
+    constructor() {
+        super(); // Call the parent class constructor
+        this.data = false
+    }
+
+    // Method to fetch response using the inherited fetchResponse method
+    async fetchData() {
+        const url = `${API_DOMAIN_URL}/bgswebservices/v2/boeing/cms/footer/component/${FOOTER_COMPONENT_UID}?${API_URL_PARAMETERS}`
+        const res = await this.fetchAPI(url);
+        this.data = res
+    }
+    async getData() {
+        return this.data
+    }
+}
+
+const INJECTED_API_AUTH_CONTROLLER = new INJECTED_API_AUTH_SERVICE()
+const GLOBAL_NAVIGATION_CLASS = new GLOBAL_NAVIGATION_CONTROLLER()
+const HEADER_CLASS = new HEADER_CONTROLLER()
+const SEARCH_CLASS = new SEARCH_CONTROLLER()
+const TOP_NAVIGATION_CLASS = new TOP_NAVIGATION_CONTROLLER()
+const FOOTER_CLASS = new FOOTER_CONTROLLER()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let OLD_CLASSIC_BPP_SEARCH_BAR;
+// let OLD_HEADER_MENU_TOGGLE;
+let OLD_TOP_NAV_MENU;
+let OLD_MINI_CART_ICON;
+let PAGE_EXPERIENCE = "other_pages"
+const SITE_LOGO_TEXTS = {
+    "my_account_page": "My Account",
+    "cart_page": "Shop",
+    "checkout_page": "Shop",
+    "shop_page": "Shop"
+}
+
+let DSI_USER = (window.bgsExp && ["distribution", "dsi"].some(id => window.bgsExp.toLocaleLowerCase() === id))
+let COMMERCIAL_SPARES_USER = sessionStorage.getItem("boe") === "y"
+let ASM_USER = false
+
+async function fetchBaseCOmponentAPIs() {
+    await Promise.all([
+        GLOBAL_NAVIGATION_CLASS.fetchData(),
+        HEADER_CLASS.fetchData(),
+        TOP_NAVIGATION_CLASS.fetchData(),
+        FOOTER_CLASS.fetchData(),
+    ])
+}
+async function beforeInjectScripts() {
+
+    let isToggleDefaultON = sessionStorage.getItem("boe") === "y"
+
+    const urlsToWatch = [
+        // the urls where we should not redirect to
+        "/price/download_catalog",
+        "/procurement/request",
+        "/history/searchOrders",
+        "/cart",
+        "/cart/quote",
+        "/history/searchQuotes",
+        "/checkout/multi/summary/quote/view",
+        "/history/searchReturns",
+        "/return/returnpage",
+        "/search",
+        "/searchShipTo/search",
+        "/shipTo/addShipTo",
+        "/supports/search-support-tickets",
+        "/supports/add-support-ticket",
+        "/infoDesk",
+        "/customercodes/search",
+        "/logout",
+        "/my-account/update-profile",
+        "/checkout/multi/summary/view",
+        "/accessDenied",
+        "/checkout/multi/summary/updateOrderType",
+        "/checkout/orderConfirmation",
+        "/partpage",
+    ]
+
+    const currentSiteUrlObj = new URL(window.location.href)
+
+
+    // Disable Toggle bar and return to classic state
+    try {
+        const disableBppNg = currentSiteUrlObj.searchParams.get("disableBppNg")
+        if (disableBppNg === true || disableBppNg === "true") {
+            sessionStorage.setItem("boe", "n")
+            currentSiteUrlObj.searchParams.delete("disableBppNg")
+            history.pushState(null, "", currentSiteUrlObj.href);
+            isToggleDefaultON = false
+            COMMERCIAL_SPARES_USER = false
+        }
+    } catch (e) { }
+
+
+    // Enable the NG experience if the url has a param
+    try {
+        const isNg = currentSiteUrlObj.searchParams.get("boe")
+        if (atob(isNg).toLocaleLowerCase() === "y") {
+            sessionStorage.setItem("boe", "y")
+            currentSiteUrlObj.searchParams.delete("boe")
+            history.pushState(null, "", currentSiteUrlObj.href);
+            isToggleDefaultON = true
+            COMMERCIAL_SPARES_USER = true;
+            DSI_USER = false
+            window.bgsExp = "bppng"
+        }
+    } catch (e) { }
+
+    try {
+        currentSiteUrlObj.searchParams.delete("refApp");
+        history.pushState(null, "", currentSiteUrlObj.href);
+    } catch (e) { }
+    // Enable toggle and return to the url as per param value bppngexperience
+    // try {
+    //     const bppngexperienceurl = currentSiteUrlObj.searchParams.get("bppngexperience")
+    //     const bppngexperienceurlObj = new URL(bppngexperienceurl)
+    //     if ((bppngexperienceurlObj.protocol === "https:" || bppngexperienceurlObj.protocol === "http:") && bppngexperienceurlObj.href?.length > 0) {
+    //         if (currentSiteUrlObj.searchParams.get("returnUrl"))
+    //             bppngexperienceurlObj.searchParams.set("returnUrl", currentSiteUrlObj.searchParams.get("returnUrl"))
+
+    //         bppngexperienceurlObj.searchParams.set("parentId", window.location.origin)
+    //         bppngexperienceurlObj.searchParams.set("refApp", btoa("Auth"))
+
+    //         if (bppngexperienceurlObj.href) {
+    //             if (window.togglebarContent)
+    //                 sessionStorage.setItem("one_tab_experience", "true")
+
+    //             window.location.href = bppngexperienceurlObj.href
+    //         } else {
+    //             sessionStorage.setItem("one_tab_experience", "false")
+    //             // No Auto redirection
+    //         }
+    //     }
+    // } catch (e) {
+    //     console.error("Login auto redirect failed")
+    //     currentSiteUrlObj.searchParams.delete("bppngexperienceurl")
+    //     history.pushState(null, "", currentSiteUrlObj.href);
+    // }
+
+
+    // Logout redirection on logout button click
+    try {
+        const logoutUrl = currentSiteUrlObj.searchParams.get("logoutUrl")
+        const logoutUrlObj = new URL(logoutUrl)
+        if ((logoutUrlObj.protocol === "https:" || logoutUrlObj.protocol === "http:") && logoutUrlObj.href?.length > 0) {
+            sessionStorage.clear();
+            localStorage.clear();
+            document.cookie.split(';').forEach(function (c) {
+                document.cookie = c.trim().split('=')[0] + '=;' + 'expires=Thu, 01 Jan 1970 00:00:00 UTC;';
+            });
+            window.location.href = logoutUrlObj.href
+            COMMERCIAL_SPARES_USER = false
+        }
+
+    } catch (e) { }
+
+
+    // Enable Togglebar if the url parameter "enableBppNg" is present 
+    try {
+        const enableBppNg = currentSiteUrlObj.searchParams.get("enableBppNg")
+        if (isToggleDefaultON && (enableBppNg === true || enableBppNg === "true")) {
+            sessionStorage.setItem("boe", "y")
+            currentSiteUrlObj.searchParams.delete("enableBppNg")
+            history.pushState(null, "", currentSiteUrlObj.href);
+            isToggleDefaultON = false
+            COMMERCIAL_SPARES_USER = true
+        }
+    } catch (e) { }
+
+
+    // if (isToggleDefaultON) {
+
+    //     if (urlsToWatch.filter(url => window.location.href.includes(url))?.length <= 0) {
+    //         // Redirection scripts written here
+    //         if (window.togglebarContent) {
+    //             sessionStorage.setItem("one_tab_experience", "true")
+    //             const commonSiteUrl = new URL(togglebarContent.redirectDomainUrl)
+    //             commonSiteUrl.searchParams.set("parentId", window.location.origin)
+    //             commonSiteUrl.searchParams.set("refApp", btoa("Auth"))
+    //             window.location.href = commonSiteUrl.href
+    //         }
+
+    //         // const updatedRedirectUrl = await getUrlTransferParameters(togglebarContent.redirectDomainUrl)
+    //         // if (updatedRedirectUrl) {
+    //         //     window.location.href = updatedRedirectUrl
+    //         // } else {
+    //         //     console.log("cannot redirect the page")
+    //         // }
+
+    //     } else {
+    //         console.log("The site should show NG features in classic page itself")
+    //     }
+    // } else {
+    //     console.log("The toggle buton is OFF")
+    // }
+    // if (isToggleDefaultON && (document.title.toLocaleLowerCase() === "the boeing part page - part page home" || document.title.toLocaleLowerCase() === "part page | homepage")) {
+    //     const updatedRedirectUrl = new URL(`${API_DOMAIN_URL}/spares`)
+    //     window.location.href = updatedRedirectUrl.href
+    // }
+}
+
+async function beforeLoadScriptsBPPNG() {
+
+    //BPP classic Toggle
+    // OLD_HEADER_MENU_TOGGLE = $("#header-2").find('li#menu-trigger').detach();
+
+
+    // Old BPP classic search bar
+    OLD_CLASSIC_BPP_SEARCH_BAR = $("#header-2").find('form#onesap_global_search').detach();
+
+    // Navigation component
+    OLD_TOP_NAV_MENU = $("#header-2").find('nav.ha-menu').detach();
+
+    // Cart Icon change color and remove unwated Texts
+    const cartIcon = await createComponent({ attributes: { class: "multi-cart-icon" }, children: [ICON_SPRITE.CART.CART_ICON] })
+    OLD_MINI_CART_ICON = $("#header-2").find('a.miniCartHover').detach();
+    $(OLD_MINI_CART_ICON).find(".tm-icon.zmdi.zmdi-shopping-cart").replaceWith(cartIcon)
+    $(OLD_MINI_CART_ICON).contents().filter(function () {
+        return this.nodeType === 3;
+    }).remove()
+
+    // let isToggleDefaultON = document.cookie.indexOf("commonHdrTgl=true") >= 0 ? true : false
+    if (DSI_USER || COMMERCIAL_SPARES_USER) {
+
+        if (COMMERCIAL_SPARES_USER) {
+            OVERRIDE_SCRIPTS_INJECTION_COMPONENT_UID = "BgsAddScripts_BPPNG"
+            OVERRIDE_STYLES_INJECTION_COMPONENT_UID = "BgsAddStyles_BPPNG"
+            HEADER_COMPONENT_UID = "BgsHeader_BPPNG"
+            TOP_NAV_COMPONENT_UID = "BgsTopNav_BPPNG"
+            FOOTER_COMPONENT_UID = "BgsFooter_BPPNG"
+            LOGOUT_URL = LOGOUT_URL_AVID
+        } else if (DSI_USER) {
+            OVERRIDE_SCRIPTS_INJECTION_COMPONENT_UID = "BgsAddScripts_DSI"
+            OVERRIDE_STYLES_INJECTION_COMPONENT_UID = "BgsAddStyles_DSI"
+            // GLOBAL_NAV_COMPONENT_UID = "BgsGlobalNav_DSI"
+            HEADER_COMPONENT_UID = "BgsglobalHeader_DSI"
+            TOP_NAV_COMPONENT_UID = "BgstopNav_DSI"
+            FOOTER_COMPONENT_UID = "BgsFooter_DSI"
+            LOGOUT_URL = LOGOUT_URL_B1L
+        }
+        const URLS_INCLUDE_ARR_MY_ACCOUNT = [
+            "/history/searchQuotes",
+            "/checkout/multi/summary/quote/view",
+            "/history/searchReturns",
+            "/return/returnpage",
+            "/my-account/",
+            "/price/download_catalog",
+            "/procurement",
+            "/searchShipTo",
+            "/shipTo",
+            "/cart/quote",
+            "/history/"
+        ]
+        const URLS_INCLUDE_ARR_CART = [
+            "/partpage/cart",
+            "/partpage/pp/en/USD/cart",
+            "cart?updatePrice=true",
+        ]
+        const URLS_INCLUDE_ARR_CHECKOUT = [
+            "/checkout/",
+        ]
+        const URLS_INCLUDE_ARR_SHOP = [
+            "/search/"
+        ]
+        if (URLS_INCLUDE_ARR_MY_ACCOUNT.some(url => window.location.href.includes(url))) {
+            PAGE_EXPERIENCE = "my_account_page"
+        } else if (URLS_INCLUDE_ARR_CART.some(url => window.location.href.includes(url))) {
+            PAGE_EXPERIENCE = "cart_page"
+            ELEMENT_VISIBILITY_STATUS["topHatBar"] = {
+                ...ELEMENT_VISIBILITY_STATUS["topHatBar"],
+                visibility: false,
+                shouldShowGlobalNav: false,
+                shouldShowAccountSelector: false,
+                shouldShowSwapIcon: false,
+                showShoppingAs: false,
+
+            }
+        } else if (URLS_INCLUDE_ARR_CHECKOUT.some(url => window.location.href.includes(url) && !window.location.href.includes("orderConfirmation"))) {
+            PAGE_EXPERIENCE = "checkout_page"
+            ELEMENT_VISIBILITY_STATUS["topHatBar"] = {
+                ...ELEMENT_VISIBILITY_STATUS["topHatBar"],
+                visibility: false,
+                shouldShowGlobalNav: false,
+                shouldShowAccountSelector: false,
+                shouldShowSwapIcon: false,
+                showShoppingAs: false,
+
+            }
+        }
+        else if (URLS_INCLUDE_ARR_SHOP.some(url => window.location.href.includes(url))) {
+            PAGE_EXPERIENCE = "shop_page"
+            ELEMENT_VISIBILITY_STATUS.simplifiedFooter = false
+            ELEMENT_VISIBILITY_STATUS.showNavigation = true
+        } else {
+            PAGE_EXPERIENCE = "other_pages"
+            ELEMENT_VISIBILITY_STATUS.simplifiedFooter = false
+            ELEMENT_VISIBILITY_STATUS.showNavigation = true
+        }
+    } else {
+        OVERRIDE_SCRIPTS_INJECTION_COMPONENT_UID = "BgsAddScripts_BPPClassic"
+        OVERRIDE_STYLES_INJECTION_COMPONENT_UID = "BgsAddStyles_BPPClassic"
+        GLOBAL_NAV_COMPONENT_UID = "BgsGlobalNav_BPPClassic"
+        HEADER_COMPONENT_UID = "BgsglobalHeader_BPPClassic"
+        TOP_NAV_COMPONENT_UID = "BgstopNav_BPPClassic"
+        FOOTER_COMPONENT_UID = "BgsFooter_BPPClassic"
+        ELEMENT_VISIBILITY_STATUS["topHatBar"] = {
+            ...ELEMENT_VISIBILITY_STATUS["topHatBar"],
+            shouldShowAccountSelector: false,
+            shouldShowSwapIcon: false,
+            showShoppingAs: false,
+
+        }
+        ELEMENT_VISIBILITY_STATUS.showNavigation = true
+        ELEMENT_VISIBILITY_STATUS.simplifiedFooter = false
+    }
+
+
+}
+async function afterLoadScriptsBPPNG() {
+    // const isToggleDefaultON = document.cookie.indexOf("commonHdrTgl=true") >= 0 ? true : false
+    const searchElement = document.querySelector("header-common-search")
+    const headerCartIconSlot = document.querySelector("header-cart-icon")
+    const headerLoginIconSlot = document.querySelector("header-login-icon")
+    const headerProfileIconSlot = document.querySelector("header-profile-icon")
+    const headerBentoIconSlot = document.querySelector("header-bento-icon")
+    const headerHelpIconSlot = document.querySelector("header-help-icon")
+    const simplifiedHeaderButtonSlot = document.querySelector("simplified-redirect-button")
+    const headerLogoElementSlot = document.querySelector("header-logo-element")
+    const navigationElementDesktop = document.querySelector("desktop-nav")
+    const bottomBannerSlot = document.querySelector("bottom-navigation-banner")
+    if (!(COMMERCIAL_SPARES_USER || DSI_USER)) {
+
+        // header search condition
+        if (OLD_CLASSIC_BPP_SEARCH_BAR && OLD_CLASSIC_BPP_SEARCH_BAR.length > 0) {
+            searchElement.setSearchBar = { type: "classic", component: OLD_CLASSIC_BPP_SEARCH_BAR }
+        }
+
+        // header cart icon
+        if (OLD_MINI_CART_ICON && OLD_MINI_CART_ICON.length > 0) {
+            headerCartIconSlot.setCartIcon = { type: "classic", component: OLD_MINI_CART_ICON }
+        }
+
+        // if (OLD_TOP_NAV_MENU && OLD_TOP_NAV_MENU.length > 0) {
+        //     $(`#${HEADER_SLOTS.getSlot("navigation").id}`).append(OLD_TOP_NAV_MENU)
+        // }
+        headerLogoElementSlot.setHeaderLogoText = ""
+        headerProfileIconSlot.setProfileIcon = { type: "bpp" }
+        headerHelpIconSlot.setHelpIconStatus = { type: "global" }
+        headerBentoIconSlot.setBentoIconStatus = { type: "global" }
+        if (navigationElementDesktop) navigationElementDesktop.navStatus = { status: "show" }
+    } else {
+        switch (PAGE_EXPERIENCE) {
+            case "cart_page": {
+                simplifiedHeaderButtonSlot.setButtonStatus = { text: "Back to Shopping", url: `${API_DOMAIN_URL}${DSI_USER ? "/distribution" : "/spares"}` }
+                headerLogoElementSlot.setHeaderLogoText = SITE_LOGO_TEXTS[PAGE_EXPERIENCE]
+                headerProfileIconSlot.setProfileIcon = { type: "global" }
+                break;
+            }
+            case "checkout_page": {
+                simplifiedHeaderButtonSlot.setButtonStatus = { text: "Back to Cart", url: `/partpage/cart` }
+                headerLogoElementSlot.setHeaderLogoText = SITE_LOGO_TEXTS[PAGE_EXPERIENCE]
+                headerProfileIconSlot.setProfileIcon = { type: "global" }
+                break;
+            }
+            case "shop_page": {
+                searchElement.setSearchBar = { type: "global" }
+                headerCartIconSlot.setCartIcon = { type: "mini" }
+                headerProfileIconSlot.setProfileIcon = { type: "global" }
+                if (navigationElementDesktop) navigationElementDesktop.navStatus = { status: "show" }
+                headerHelpIconSlot.setHelpIconStatus = { type: "global" }
+                headerBentoIconSlot.setBentoIconStatus = { type: "global" }
+                headerLogoElementSlot.setHeaderLogoText = SITE_LOGO_TEXTS[PAGE_EXPERIENCE]
+                break;
+            }
+            case "my_account_page": {
+                searchElement.setSearchBar = { type: "global" }
+                headerCartIconSlot.setCartIcon = { type: "mini" }
+                headerProfileIconSlot.setProfileIcon = { type: "global" }
+                headerHelpIconSlot.setHelpIconStatus = { type: "global" }
+                headerBentoIconSlot.setBentoIconStatus = { type: "global" }
+                headerLogoElementSlot.setHeaderLogoText = SITE_LOGO_TEXTS[PAGE_EXPERIENCE]
+                break;
+            }
+            case "other_pages":
+            default: {
+                searchElement.setSearchBar = { type: "global" }
+                headerCartIconSlot.setCartIcon = { type: "mini" }
+                headerProfileIconSlot.setProfileIcon = { type: "global" }
+                headerHelpIconSlot.setHelpIconStatus = { type: "global" }
+                headerBentoIconSlot.setBentoIconStatus = { type: "global" }
+                if (navigationElementDesktop) navigationElementDesktop.navStatus = { status: "show" }
+                headerLogoElementSlot.setHeaderLogoText = SITE_LOGO_TEXTS[PAGE_EXPERIENCE]
+            }
+        }
+    }
+
+    if (!DSI_USER && !COMMERCIAL_SPARES_USER) {
+        await waitForElement(".profile_dropdown_list")
+        const currentUserName = document.querySelector(".profile-name").innerText
+        const UserObj = { name: currentUserName.split(/\u00A0|\s+/).filter(Boolean)[0] }
+        const profileIcon = document.querySelector("header-profile-icon")
+        if (profileIcon) profileIcon.setProfileIconName = UserObj
+    }
+
+    function adjustHashAnchors() {
+        let hatags = document.getElementsByTagName("a");
+        for (let i = 0; i < hatags.length; i++) {
+            let currElem = document.getElementsByTagName("a")[i];
+            if (currElem && currElem.href.endsWith("#")) currElem.href = "javascript:void(0);";
+        }
+    }
+    setTimeout(adjustHashAnchors, 50)
+}
+async function replaceOldContents() {
+    const headerWrapperComponent = await createComponent(HEADER_WRAPPER_COMPONENT_WRAPPER_SLOTS)
+    $(`#${HEADER_REPLACE_ID}`).replaceWith(headerWrapperComponent)
+
+    const footerWrapperComponentObj = {
+        attributes: footerWrapperDIV
+    }
+    const footerWrapperComponent = await createComponent(footerWrapperComponentObj)
+    $(`#${FOOTER_REPLACE_ID}`).replaceWith(footerWrapperComponent)
+    return true
+}
+async function replaceHeader() {
+    await Promise.all([
+        // getToggleBarComponent(),
+        // createAccountSelectorPlaceholder(),
+        createShoppingAsBar(),
+        createHeader(),
+        createTopNav(),
+    ])
+}
+
+async function toggleBarToggleTrue() {
+    const searchElement = document.querySelector("header-common-search")
+    const headerCartIconSlot = document.querySelector("header-cart-icon")
+    const headerProfileIconSlot = document.querySelector("header-profile-icon")
+    const headerLogoElementSlot = document.querySelector("header-logo-element")
+
+    searchElement.setSearchBar = { type: "global" }
+    headerCartIconSlot.setCartIcon = { type: "mini" }
+    headerProfileIconSlot.setProfileIcon = { type: "global" }
+    headerLogoElementSlot.setHeaderLogoText = SITE_LOGO_TEXTS[PAGE_EXPERIENCE]
+
+}
+async function toggleBarToggleFalse() {
+    ShowSeamlessLoading(true)
+    window.location.reload()
+    // const searchElement = document.querySelector("header-common-search")
+    // const headerCartIconSlot = document.querySelector("header-cart-icon")
+    // const headerProfileIconSlot = document.querySelector("header-profile-icon")
+    // const headerLogoElementSlot = document.querySelector("header-logo-element")
+    // const simplifiedHeaderButtonSlot = document.querySelector("simplified-redirect-button")
+
+    // searchElement.setSearchBar = { type: "classic", component: OLD_CLASSIC_BPP_SEARCH_BAR }
+    // headerCartIconSlot.setCartIcon = { type: "classic", component: OLD_MINI_CART_ICON }
+    // headerProfileIconSlot.setProfileIcon = { type: "bpp" }
+    // headerLogoElementSlot.setHeaderLogoText = "The Boeing PART Page"
+    // simplifiedHeaderButtonSlot.setButtonStatus = { type: "none" }
+}
+
+async function replaceMainContent() {
+    return true
+}
+async function replaceFooter() {
+    await createFooter()
+}
+
+async function replaceOldContent() {
+    await Promise.all([
+        replaceHeader(),
+        replaceMainContent(),
+        replaceFooter(),
+    ])
+
+}
+
+async function injectOverRideScriptFiles() {
+
+    try {
+        const SCRIPT_URL = `${API_DOMAIN_URL}/${COMPONENT_API_PATH}/${OVERRIDE_SCRIPTS_INJECTION_COMPONENT_UID}?${API_URL_PARAMETERS}`
+        const STYLES_URL = `${API_DOMAIN_URL}/${COMPONENT_API_PATH}/${OVERRIDE_STYLES_INJECTION_COMPONENT_UID}?${API_URL_PARAMETERS}`
+
+        const [scriptContent, styleContent] = await Promise.all([fetchAPI(SCRIPT_URL), fetchAPI(STYLES_URL)])
+
+        if (scriptContent?.content) {
+            Function(scriptContent?.content || "")()
+
+            const scriptComponents = {
+                tagName: "div",
+                attributes: { class: "override_scripts_element", text: scriptContent?.content || "" },
+            }
+            const scriptDivHTML = await createComponent(scriptComponents)
+            $("head").append(scriptDivHTML)
+        } else {
+            console.log("There is not override scripts used at this moment")
+        }
+
+        if (styleContent?.content) {
+            const styleComponents = {
+                tagName: "div",
+                attributes: { class: "override_styles_element" },
+                children: [styleContent?.content || ""]
+            }
+            const stylesDivHTML = await createComponent(styleComponents)
+            $("head").append(stylesDivHTML)
+        } else {
+            console.log("There is not override styles used at this moment")
+        }
+
+
+    } catch (e) {
+        console.log({ e })
+        return true
+    }
+
+}
+
+async function injectStylesHTMLFile() {
+    let stylesLinkArray = []
+    if (jQuery("link[href='https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp']").length <= 0) {
+        stylesLinkArray.push("https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp")
+    }
+    stylesLinkArray.push(BPP_STYLE_CSS_FILE_URL)
+    await Promise.all([...stylesLinkArray.map(href => injectLink({ href })), ...SCRIPTS_TO_INJECT.map(src => injectScript(src))])
+    return true
+}
+
+async function commonMainLoad() {
+
+    //Call API and replace the contents on the screen
+    await replaceOldContent()
+
+    //After page load scripts
+    await afterLoadScriptsBPPNG()
+
+}
+
+
+async function mainLoad() {
+
+    try {
+        //show loading screen if not shown yet
+        await ShowSeamlessLoading(true)
+
+        // Before we call the injection scripts()
+        await beforeInjectScripts()
+
+        //Before page load scripts
+        await beforeLoadScriptsBPPNG()
+
+        // replace old content with new HTML skeleton
+        await replaceOldContents()
+
+        // remove loading screen after skeleton
+        await ShowSeamlessLoading(false)
+
+        // Inject the required external CSS files
+        await injectStylesHTMLFile()
+
+        // call the consolidated API calls
+        await fetchBaseCOmponentAPIs()
+
+        // call common render function
+        await commonMainLoad()
+
+        // call the overide scripts functionality
+        await injectOverRideScriptFiles()
+
+        //stop showing loading screen
+        await ShowSeamlessLoading(false)
+
+    } catch (e) {
+        console.error(e)
+    }
+
+}
+
+
+document.addEventListener("DOMContentLoaded", async function () { // This event listener will be triggered when the DOM is ready
+    // limit the injection to dev and QA environemnt
+    await mainLoad()
+});
+
+
+// Define breakpoints for screen sizes
+const breakpoints = {
+    desktop: 1025,     // Desktop size
+    // mobile: 768,   // Tablet size
+    // mobile: 480    // Mobile size
+};
+
+// Function to determine the current screen size
+function getCurrentScreenSize() {
+    if (window.innerWidth >= breakpoints.desktop)
+        return 'desktop';
+    return 'mobile';
+}
+
+// Function to handle screen size change
+async function onScreenSizeChange() {
+    // Add your function call here
+    console.log("calling the BPP resize function")
+    await commonMainLoad()
+}
+
+// Store the last known screen size
+let lastScreenSize = getCurrentScreenSize();
+
+// Event listener for resize
+window.addEventListener('resize', async () => {
+    const newScreenSize = getCurrentScreenSize();
+    // Check if the screen size has changed from desktop to tablet or tablet to mobile
+    if ((lastScreenSize === 'desktop' && newScreenSize === 'mobile') ||
+        (lastScreenSize === 'mobile' && newScreenSize === 'desktop')) {
+        onScreenSizeChange()
+    }
+    // Update the last known screen size
+    lastScreenSize = newScreenSize;
+});
